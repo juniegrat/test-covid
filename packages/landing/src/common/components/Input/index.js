@@ -20,14 +20,14 @@ const Input = ({
   const [state, setState] = useState({
     toggle: false,
     focus: false,
-    value: '',
+    value: ''
   });
 
   // toggle function
   const handleToggle = () => {
     setState({
       ...state,
-      toggle: !state.toggle,
+      toggle: !state.toggle
     });
   };
 
@@ -35,7 +35,7 @@ const Input = ({
   const handleOnFocus = (event) => {
     setState({
       ...state,
-      focus: true,
+      focus: true
     });
     onFocus(event);
   };
@@ -44,7 +44,7 @@ const Input = ({
   const handleOnBlur = (event) => {
     setState({
       ...state,
-      focus: false,
+      focus: false
     });
     onBlur(event);
   };
@@ -53,7 +53,7 @@ const Input = ({
   const handleOnChange = (event) => {
     setState({
       ...state,
-      value: event.target.value,
+      value: event.target.value
     });
     onChange(event.target.value);
   };
@@ -178,8 +178,10 @@ Input.propTypes = {
   /** Set input label value. */
   label: PropTypes.string,
 
-  /** The input value, required for a controlled component. */
-  value: PropTypes.oneOf(['string', 'number']),
+  /** The input value, required for a controlled component.
+   * ! remove comment
+   */
+  //value: PropTypes.oneOf(['string', 'number', '']),
 
   /** Make default input into material style input. */
   isMaterial: PropTypes.bool,
@@ -194,6 +196,8 @@ Input.propTypes = {
     'password',
     'number',
     'textarea',
+    'date',
+    'tel'
   ]),
 
   /** Add icon in input field. This prop will not work with password
@@ -204,9 +208,6 @@ Input.propTypes = {
   /** Set input field icon position. Default position is 'left'. */
   iconPosition: PropTypes.oneOf(['left', 'right']),
 
-  /**
-   * @ignore
-   */
   onBlur: PropTypes.func,
 
   /**
@@ -220,17 +221,17 @@ Input.propTypes = {
    * @param {object} event The event source of the callback.
    * You can pull out the new value by accessing `event.target.value`.
    */
-  onChange: PropTypes.func,
+  onChange: PropTypes.func
 };
 
-/** Inout default type. */
+/** Input default type. */
 Input.defaultProps = {
   inputType: 'text',
   isMaterial: false,
   iconPosition: 'left',
   onBlur: () => {},
   onFocus: () => {},
-  onChange: () => {},
+  onChange: () => {}
 };
 
 export default Input;
