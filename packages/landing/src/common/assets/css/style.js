@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import { themeGet } from '@styled-system/theme-get';
 
 export const ResetCSS = createGlobalStyle`
   ::selection {
@@ -116,4 +117,81 @@ export const ResetCSS = createGlobalStyle`
       }
     }
   }
+/*  ANT DESIGN */
+.ant-input:focus {
+  border-color: ${themeGet('colors.primaryLight')};
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 2px #e98d5733;
+    box-shadow: 0 0 0 2px #e99e5733;
+}
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector{
+  border-color: ${themeGet('colors.primaryLight')};
+      border-right-width: 1px !important;
+      outline: 0;
+      -webkit-box-shadow: 0 0 0 2px #e98d5733;
+    box-shadow: 0 0 0 2px #e99e5733;
+}
+.ant-btn.ant-btn-primary{
+  background: ${themeGet('colors.primary')};
+  border-color: ${themeGet('colors.primary')};
+}
+.ant-btn:hover{
+  color: initial;
+  border-color: initial; 
+}
+
+.ant-btn-primary:hover{
+  background: ${themeGet('colors.primaryDark')};
+  border-color: ${themeGet('colors.primaryDark')}; 
+  color:  ${themeGet('colors.white')};;
+}
+.ant-btn-primary[disabled], .ant-btn-primary[disabled]:hover, .ant-btn-primary[disabled]:focus, .ant-btn-primary[disabled]:active {
+    color: rgba(0, 0, 0, 0.25);
+    background: #f5f5f5;
+    border-color: #d9d9d9;
+    text-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector{
+  border-color: ${themeGet('colors.primary')};
+}
+
+  .ant-menu-vertical.ant-menu-sub:not([class*='-active']),
+  .ant-menu-vertical-left.ant-menu-sub:not([class*='-active']),
+  .ant-menu-vertical-right.ant-menu-sub:not([class*='-active']) {
+    border-top-right-radius:10px;
+    border-bottom-right-radius:10px;
+    box-shadow: 0 2px 3px rgba(200, 200, 200, 0.2);
+  }
+  .ant-menu-sub.ant-menu-vertical li:hover {
+    color: ${themeGet('colors.primary')};
+  }
+  .ant-menu-submenu:hover
+    > .ant-menu-submenu-title
+    > .ant-menu-submenu-expand-icon,
+  .ant-menu-submenu:hover > .ant-menu-submenu-title > .ant-menu-submenu-arrow,
+  .ant-menu-light .ant-menu-item:hover,
+  .ant-menu-light .ant-menu-item-active,
+  .ant-menu-light .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open,
+  .ant-menu-light .ant-menu-submenu-active,
+  .ant-menu-light .ant-menu-submenu-title:hover {
+    color: ${themeGet('colors.primary')};
+  }
+  .ant-menu-vertical .ant-menu-item-group-list .ant-menu-submenu-title, .ant-menu-vertical .ant-menu-submenu-title{
+    padding-left:0;
+    border-radius:10px;
+  }
+  .ant-menu-submenu-title {
+    padding-right: 54px;
+  }
+  .ant-menu-submenu-title:active{
+    background:transparent;
+    box-shadow: 0 2px 3px rgba(200, 200, 200, 0.2);
+  }
+  .ant-menu-submenu-expand-icon{
+    display: grid;
+    place-items:center
+    };
 `;
