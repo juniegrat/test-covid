@@ -4,11 +4,11 @@ import { themeGet } from '@styled-system/theme-get';
 import Text from 'common/components/Text';
 import Heading from 'common/components/Heading';
 
-const SectionHeading = ({ title, desc, ...props }) => {
+const SectionHeading = ({ children, title, desc, ...props }) => {
   return (
     <HGroup {...props}>
       <Heading as="h2" content={title} />
-      <Text content={desc} />
+      <Text content={desc}>{children}</Text>
     </HGroup>
   );
 };
