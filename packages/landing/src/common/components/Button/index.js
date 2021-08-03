@@ -73,7 +73,7 @@ Button.propTypes = {
   type: PropTypes.oneOf(['button', 'submit', 'reset']),
 
   /** Add icon */
-  icon: PropTypes.object,
+  icon: PropTypes.oneOf(['object', 'string']),
 
   /** Add loader */
   loader: PropTypes.object,
@@ -106,20 +106,20 @@ Button.propTypes = {
     'primaryWithBg',
     'secondaryWithBg',
     'warningWithBg',
-    'errorWithBg',
+    'errorWithBg'
   ]),
 
   /**
    * Gets called when the user clicks on the button
    */
-  onClick: PropTypes.func,
+  onClick: PropTypes.func
 };
 
 Button.defaultProps = {
   disabled: false,
   isMaterial: false,
   isLoading: false,
-  type: 'button',
+  type: 'button'
 };
 
 export default Button;
