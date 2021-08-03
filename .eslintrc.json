@@ -1,0 +1,22 @@
+{
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "rules": {
+      "react/react-in-jsx-scope": "off",
+      "react/display-name": "off"
+    },
+    "globals": {
+      "React": "writable"
+    },
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+  },
+  "env": {
+      "browser": true,
+      "node": true,
+      "es6": true
+  }
+}
