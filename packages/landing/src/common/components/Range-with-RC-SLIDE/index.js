@@ -91,7 +91,7 @@ const RangeBox = (props) => {
   );
 };
 
-const Index = ({ className, labelText, labelPosition, type, ...props }) => {
+export default ({ className, labelText, labelPosition, type, ...props }) => {
   // Add all classs to an array
   const addAllClasses = ['reusecore__rangebox'];
   // Add label position class
@@ -125,8 +125,6 @@ const Index = ({ className, labelText, labelPosition, type, ...props }) => {
     </Fragment>
   );
 };
-
-export default Index;
 
 RangeBox.propTypes = {
   /** ClassName of the range-box */
