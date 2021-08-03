@@ -244,6 +244,10 @@ export const Result = styled.div`
   align-items: center;
   animation: fadeIn2 0.8s linear;
   border-right: 1px solid ${themeGet('colors.lightGray', '#f0f0f0')};
+  .result {
+    font-size: 25px;
+    font-weight: 700;
+  }
 `;
 export const PatientInfo = styled.div`
   display: flex;

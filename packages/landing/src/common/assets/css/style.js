@@ -194,4 +194,8 @@ export const ResetCSS = createGlobalStyle`
     display: grid;
     place-items:center
     };
+    .ant-modal-body .result-form{
+      display:flex;
+      flex-direction:column;
+    }
 `;

@@ -4,7 +4,7 @@ import Link from 'next/link';
 // LIBRAIRIES
 import styled from 'styled-components';
 import { themeGet } from '@styled-system/theme-get';
-import { Menu, Tooltip, Progress, Empty, BackTop } from 'antd';
+import { Menu, Tooltip, Progress, Empty, BackTop, Divider } from 'antd';
 import { Bar } from 'react-chartjs-2';
 
 // COMPONENTS
@@ -218,7 +218,7 @@ const Results = ({ tests }) => {
                 ) => (
                   <ResultCard
                     key={`result-card-key-${index}`}
-                    className={result ? 'result' : ' '}
+                    /* className={result ? 'result' : ' '} */
                   >
                     <ActionMenu
                       onClick={setCurrentMenuKey}
@@ -388,6 +388,7 @@ const Results = ({ tests }) => {
             ) : (
               <Empty description="Pas encore de résultat" />
             )}
+            <Divider />
           </ResultsWrapper>
         </ContentArea>
       </Container>

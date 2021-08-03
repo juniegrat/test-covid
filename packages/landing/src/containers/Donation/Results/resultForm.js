@@ -1,6 +1,6 @@
 // LIBRARIES
-import React, { Children } from 'react';
-import { Modal, Select, Input } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Modal, Select, Input, Upload } from 'antd';
 import {
   Formik,
   Form,
@@ -46,7 +46,6 @@ const CustomField = ({ ...props }) => {
       return (
         <Select
           {...field}
-          {...props}
           onChange={(val) => {
             setFieldValue(field.name, val);
           }}
@@ -59,6 +58,23 @@ const CustomField = ({ ...props }) => {
             </Option>
           ))}
         </Select>
+      );
+    }
+    case 'upload': {
+      return (
+        <Upload
+          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          listType="picture"
+          //defaultFileList={[...fileList]}
+          className="upload-list-inline"
+          onChange={({ file, fileList }) => {
+            if (file.status !== 'uploading') {
+              console.log(file, fileList);
+            }
+          }}
+        >
+          <Button type="button" title="Ajouter document" colors={'secondary'} />
+        </Upload>
       );
     }
     default: {
@@ -77,10 +93,10 @@ const CustomField = ({ ...props }) => {
 };
 
 const ResultForm = ({ result, isVisible, onOk, onCancel, ...props }) => {
-  const [visible, setVisible] = React.useState(isVisible);
-  const [confirmLoading, setConfirmLoading] = React.useState(false);
+  const [visible, setVisible] = useState(isVisible);
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isVisible !== visible) {
       setVisible(isVisible);
     }
@@ -88,6 +104,7 @@ const ResultForm = ({ result, isVisible, onOk, onCancel, ...props }) => {
   }, [isVisible]);
 
   const handleOk = (values) => {
+    const { submitForm } = useFormikContext();
     console.log(values);
     setConfirmLoading(true);
     onOk(values);
@@ -111,6 +128,7 @@ const ResultForm = ({ result, isVisible, onOk, onCancel, ...props }) => {
         cancelText="Annuler"
         //okButtonProps={{ disabled: !valid }}
         confirmLoading={confirmLoading}
+        destroyOnClose={true}
       >
         <Formik
           initialValues={{
@@ -133,7 +151,7 @@ const ResultForm = ({ result, isVisible, onOk, onCancel, ...props }) => {
           }}
         >
           {({ isSubmitting, isValid }) => (
-            <Form>
+            <Form className={'result-form'}>
               <CustomField
                 name="testId"
                 inputType="text"
@@ -150,7 +168,13 @@ const ResultForm = ({ result, isVisible, onOk, onCancel, ...props }) => {
                 ]}
               />
               <ErrorMessage name="result" component="div" />
-              <Button disabled={isSubmitting} type="submit" />
+              <CustomField
+                name="document"
+                inputType="upload"
+                label="Document"
+              />
+              <ErrorMessage name="testId" component="div" />
+              <Button disabled={isSubmitting} type="submit" title="envoyer" />
             </Form>
           )}
         </Formik>
