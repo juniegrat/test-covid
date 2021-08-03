@@ -142,25 +142,6 @@ export const ButtonGroup = styled.div`
   }
 `;
 
-export const TrustedBy = styled.div`
-  display: flex;
-  align-items: center;
-  @media only screen and (max-width: 1024px) {
-    justify-content: center;
-  }
-  @media only screen and (max-width: 767px) {
-    display: block;
-    text-align: left;
-  }
-  p {
-    margin: 0 20px 0 0;
-    color: ${rgba('#566272', 0.7)};
-    @media only screen and (max-width: 767px) {
-      margin: 0 0 15px 0;
-    }
-  }
-`;
-
 export const ImageGroup = styled.div`
   display: flex;
   align-items: center;
