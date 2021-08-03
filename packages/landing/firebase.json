@@ -1,13 +1,24 @@
 {
   "hosting": {
     "public": "public",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",
         "function": "nextjsFunc"
       }
-    ]
+    ],
+    "ignore": [
+      "firebase.json", 
+      "**/.*", 
+      "**/node_modules/**"
+    ],
+    "headers": [{
+      "source" : "**",
+      "headers" : [{
+        "key" : "Cache-Control",
+        "value" : "max-age=172800"
+      }]
+    }]
   },
   "functions": {
     "source": ".",
