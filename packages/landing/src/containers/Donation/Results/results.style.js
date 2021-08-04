@@ -236,7 +236,7 @@ export const CardTop = styled.div`
 export const CardBody = styled.div`
   display: flex;
 `;
-export const Result = styled.div`
+export const ResultWrapper = styled.div`
   display: flex;
   width: 70%;
   justify-content: space-around;
