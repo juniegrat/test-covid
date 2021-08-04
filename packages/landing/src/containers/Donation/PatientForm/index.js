@@ -24,8 +24,16 @@ import {
   useFormikContext,
   useField
 } from 'formik';
-import { addDocument } from 'common/lib/firebase/firebase.util';
-import { serverTimestamp } from 'common/lib/firebase/firebase';
+import {
+  batchOperations,
+  getNewDocRef
+} from 'common/lib/firebase/firebase.util';
+import { serverTimestamp, increment } from 'common/lib/firebase/firebase';
+import LottieAnimation from 'common/components/Lottie/index';
+// LOTTIE ANIMATION
+import check from 'common/assets/image/lottie/check.json';
+import check1 from 'common/assets/image/lottie/check-zinli.json';
+import check2 from 'common/assets/image/lottie/doc-check.json';
 
 const DonationFormSection = () => {
   const [activeKey, setActiveKey] = useState('1');
@@ -53,10 +61,30 @@ const DonationFormSection = () => {
   };
 
   const onSubmit = async (values) => {
-    const data = await addDocument('tests', {
-      ...values,
-      createdAt: serverTimestamp()
-    });
+    const newDocRef = await getNewDocRef('tests');
+    console.log(newDocRef);
+    await batchOperations([
+      {
+        operation: 'set',
+        collectionKey: 'tests',
+        docRef: newDocRef.id,
+        data: {
+          ...values,
+          createdAt: serverTimestamp()
+        }
+      },
+      {
+        operation: 'set',
+        collectionKey: 'aggregations',
+        docRef: '--stats--',
+        data: {
+          testTotals: increment,
+          lastTestAt: serverTimestamp(),
+          lastTestRef: newDocRef
+        },
+        options: { merge: true }
+      }
+    ]);
   };
 
   return (
@@ -161,6 +189,12 @@ const DonationFormSection = () => {
             </TabPane>
             <TabPane tab={<TabTitle step="02" title="Ending" />} key="2">
               <FormEnd>
+                <LottieAnimation
+                  animation={check1}
+                  width={150}
+                  height={150}
+                  loop={false}
+                />
                 <Button
                   title="Retourner à l'acceuil"
                   onClick={() => setActiveKey('1')}
