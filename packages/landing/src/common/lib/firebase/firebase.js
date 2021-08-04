@@ -11,6 +11,7 @@ export const firebaseApp = !firebase.apps.length
   : firebase.app();
 export const auth = firebase.auth();
 export const db = firebase.firestore();
-export const { serverTimestamp, increment } = firebase.firestore.FieldValue;
-
+export const { serverTimestamp } = firebase.firestore.FieldValue;
+export const increment = firebase.firestore.FieldValue.increment(1);
+export const decrement = firebase.firestore.FieldValue.increment(-1);
 export default firebase;
