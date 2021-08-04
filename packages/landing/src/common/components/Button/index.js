@@ -73,7 +73,7 @@ Button.propTypes = {
   type: PropTypes.oneOf(['button', 'submit', 'reset']),
 
   /** Add icon */
-  icon: PropTypes.oneOf(['object', 'string']),
+  icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 
   /** Add loader */
   loader: PropTypes.object,
