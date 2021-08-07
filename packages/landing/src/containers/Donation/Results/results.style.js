@@ -157,7 +157,7 @@ export const CurrentStatus = styled.p`
   }
 `;
 
-export const ResultCard = styled.div`
+export const Result = styled.div`
   background-color: #ffffff;
   border-radius: 15px;
   padding: 40px;
