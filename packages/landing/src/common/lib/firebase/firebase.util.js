@@ -1,4 +1,4 @@
-import { db, increment, decrement } from './firebase';
+import { db } from './firebase';
 
 export function convertCollectionsSnapshotToMap(snapshots) {
   return snapshots.docs.reduce((accumulator, collection) => {
@@ -53,10 +53,6 @@ export async function getDocuments(collectionName) {
     .get()
     .then((querySnapshot) =>
       querySnapshot.docs.map((doc) => {
-        /*  let createdAt;
-        if (doc.data().createdAt) {
-          createdAt = Date.parse(doc.data().createdAt.toDate().toString());
-        } */
         return { id: doc.id, /* createdAt, */ ...doc.data() };
       })
     );
