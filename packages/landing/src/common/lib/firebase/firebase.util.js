@@ -7,10 +7,10 @@ export function convertCollectionsSnapshotToMap(snapshots) {
   }, {});
 }
 export async function getNewDocRef(collectionName) {
-  return await db.collection(collectionName).doc();
+  return db.collection(collectionName).doc();
 }
 export async function addDocument(collectionName, documentData) {
-  return await db
+  return db
     .collection(collectionName)
     .add(documentData)
     .then((docRef) => docRef.id);
@@ -21,7 +21,7 @@ export async function setDocument(
   documentData,
   options
 ) {
-  return await db
+  return db
     .collection(collectionName)
     .doc(docRef)
     .set(documentData, { ...options });
@@ -34,13 +34,13 @@ export const setDocuments = async (collectionKey, objectsToAdd) => {
     const newDocRef = collectionRef.doc();
     batch.set(newDocRef, obj);
   });
-  return await batch.commit().then(() => {
+  return batch.commit().then(() => {
     console.log('Batch Addition successfully committed!');
   });
 };
 
 export async function getDocument(collectionName, docRef) {
-  return await db
+  return db
     .collection(collectionName)
     .doc(docRef)
     .get()
@@ -48,7 +48,7 @@ export async function getDocument(collectionName, docRef) {
 }
 
 export async function getDocuments(collectionName) {
-  return await db
+  return db
     .collection(collectionName)
     .get()
     .then((querySnapshot) =>
@@ -64,7 +64,7 @@ export async function getDocuments(collectionName) {
 export async function getDocumentsByQuery(collectionName, query) {
   console.log(...query, collectionName, 'test');
 
-  return await db
+  return db
     .collection(collectionName)
     .where(...query)
     .get()
@@ -82,18 +82,18 @@ export async function deleteCollection(collectionName) {
       querySnapshot.docs.map((doc) => batch.delete(collectionRef.doc(doc.id)))
     );
 
-  return await batch.commit().then(() => {
+  return batch.commit().then(() => {
     console.log('Batch Deletion successfully committed!');
   });
 }
 
-export const batchedDelete = async (objectsToDelete) => {
+export const batchedDelete = async (collectionKey, objectsToDelete) => {
   const batch = db.batch();
   objectsToDelete.forEach(({ docRef }) => {
     const oldDocRef = db.collection(collectionKey).doc(docRef);
     batch.delete(oldDocRef);
   });
-  return await batch.commit().then(() => {
+  return batch.commit().then(() => {
     console.log('Batch Writes successfully committed!');
   });
 };
@@ -104,7 +104,7 @@ export const batchedWrites = async (objectsToAdd) => {
     const newDocRef = db.collection(collectionKey).doc(docRef);
     batch.set(newDocRef, data, options);
   });
-  return await batch.commit().then(() => {
+  return batch.commit().then(() => {
     console.log('Batch Operation successfully committed!');
   });
 };
@@ -115,7 +115,7 @@ export const batchedUpdates = async (objectsToUpdate) => {
     const newDocRef = db.collection(collectionKey).doc(docRef);
     batch.update(newDocRef, data);
   });
-  return await batch.commit().then(() => {
+  return batch.commit().then(() => {
     console.log('Batch Updates successfully committed!');
   });
 };
@@ -142,7 +142,5 @@ export const batchOperations = async (documents) => {
         break;
     }
   });
-  return await batch.commit().then(() => {
-    console.log('Batch Operations successfully committed!');
-  });
+  return batch.commit().then(() => true);
 };
