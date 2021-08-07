@@ -24,6 +24,7 @@ import {
   useFormikContext,
   useField
 } from 'formik';
+import faker from 'faker/locale/fr';
 import {
   batchOperations,
   getNewDocRef
@@ -61,8 +62,37 @@ const DonationFormSection = () => {
   };
 
   const onSubmit = async (values) => {
+    for (let x = 0; x < 10; x++) {
+      const newDocRef = await getNewDocRef('tests');
+      await batchOperations([
+        {
+          operation: 'set',
+          collectionKey: 'tests',
+          docRef: newDocRef.id,
+          data: {
+            birthday: '21-12-2021',
+            email: faker.internet.email(),
+            fullName: faker.name.findName(),
+            phoneNumber: faker.phone.phoneNumber(),
+            ssn: faker.datatype.number(),
+            createdAt: serverTimestamp()
+          }
+        },
+        {
+          operation: 'set',
+          collectionKey: 'aggregations',
+          docRef: '--stats--',
+          data: {
+            totalCount: increment,
+            lastTestAt: serverTimestamp(),
+            lastTestRef: newDocRef
+          },
+          options: { merge: true }
+        }
+      ]);
+    }
+    return;
     const newDocRef = await getNewDocRef('tests');
-    console.log(newDocRef);
     await batchOperations([
       {
         operation: 'set',
@@ -78,7 +108,7 @@ const DonationFormSection = () => {
         collectionKey: 'aggregations',
         docRef: '--stats--',
         data: {
-          testTotals: increment,
+          totalCount: increment,
           lastTestAt: serverTimestamp(),
           lastTestRef: newDocRef
         },
@@ -118,15 +148,6 @@ const DonationFormSection = () => {
                   }}
                   validate={(values) => {
                     const errors = {};
-                    if (!values.email) {
-                      errors.email = 'Required';
-                    } else if (
-                      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
-                        values.email
-                      )
-                    ) {
-                      errors.email = 'Invalid email address';
-                    }
                     return errors;
                   }}
                   onSubmit={(values, { setSubmitting }) => {
