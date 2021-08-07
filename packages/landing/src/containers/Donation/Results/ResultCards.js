@@ -1,28 +1,26 @@
 import React, { useState } from 'react';
 // NEXT
-import Link from 'next/link';
 // LIBRAIRIES
 import styled from 'styled-components';
 import { themeGet } from '@styled-system/theme-get';
-import { Menu, Empty, Divider } from 'antd';
+import { Divider, Empty, Menu } from 'antd';
 // COMPONENTS
 import Heading from 'common/components/Heading';
 import Text from 'common/components/Text';
 import Button from 'common/components/Button';
 import LottieAnimation from 'common/components/Lottie/index';
 // LOTTIE ANIMATION
-import loading from 'common/assets/image/lottie/laboratorio.json';
 import loading1 from 'common/assets/image/lottie/laboratory-icon.json';
 // STYLE
 import {
-  TitleWrapper,
-  ResultsWrapper,
-  Result,
-  CardTop,
   CardBody,
-  ResultWrapper,
+  CardTop,
   PatientInfo,
-  PatientName
+  PatientName,
+  Result,
+  ResultsWrapper,
+  ResultWrapper,
+  TitleWrapper
 } from './results.style';
 // UTILS
 import localeStringOptions from 'common/utils/localeStringOptions';
@@ -42,7 +40,7 @@ import { plus } from 'react-icons-kit/feather/plus';
 
 const { SubMenu } = Menu;
 
-const ResultCard = ({ setTest, tests }) => {
+const ResultCards = ({ setTest, tests }) => {
   const [currentMenuKey, setCurrentMenuKey] = useState('settings:add');
   return (
     <ResultsWrapper>
@@ -260,4 +258,4 @@ const ResultLabel = styled.div`
   }
 `;
 
-export default ResultCard;
+export default ResultCards;
