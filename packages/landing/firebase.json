@@ -8,17 +8,21 @@
       }
     ],
     "ignore": [
-      "firebase.json", 
-      "**/.*", 
+      "firebase.json",
+      "**/.*",
       "**/node_modules/**"
     ],
-    "headers": [{
-      "source" : "**",
-      "headers" : [{
-        "key" : "Cache-Control",
-        "value" : "max-age=172800"
-      }]
-    }]
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=172800"
+          }
+        ]
+      }
+    ]
   },
   "functions": {
     "source": ".",
@@ -27,5 +31,32 @@
       "npm --prefix \"$PROJECT_DIR\" run build"
     ],
     "runtime": "nodejs10"
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "storage": {
+      "port": 9199
+    },
+    "ui": {
+      "enabled": true
+    }
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   }
 }
