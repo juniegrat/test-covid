@@ -1,35 +1,22 @@
 // LIBRARIES
 import React, { useState, useEffect } from 'react';
+import { PropTypes } from 'prop-types';
 import { Modal, Select, Input, Upload } from 'antd';
-import {
-  Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  useFormikContext,
-  useField
-} from 'formik';
+import { Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import styled from 'styled-components';
-import { themeGet } from '@styled-system/theme-get';
-// COMPONENTS
-import Box from 'common/components/Box';
-import Text from 'common/components/Text';
-//import Input from 'common/components/Input';
 import CheckBox from 'common/components/Checkbox/index';
 import Button from 'common/components/Button';
-import CustomRadio from '../CustomRadio';
 // UTILS
 import localeStringOptions from 'common/utils/localeStringOptions';
-import colors from 'common/theme/donation/colors.js';
 import toDateTime from 'common/utils/secondToDate';
-import { setDocument } from 'common/lib/firebase/firebase.util';
-import { serverTimestamp } from 'common/lib/firebase/firebase';
+import { TypeOf } from 'yup';
 
 const { Option } = Select;
 
 const CustomField = ({ ...props }) => {
   const { setFieldValue } = useFormikContext();
   const [field] = useField(props);
+
   switch (props.inputType) {
     case 'checkbox': {
       return (
@@ -92,9 +79,9 @@ const CustomField = ({ ...props }) => {
   }
 };
 
-const ResultForm = ({ result, isVisible, onOk, onCancel, ...props }) => {
+const ResultForm = ({ test, isVisible, onCancel }) => {
   const [visible, setVisible] = useState(isVisible);
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  const { submitForm, isSubmitting } = useFormikContext();
 
   useEffect(() => {
     if (isVisible !== visible) {
@@ -104,11 +91,7 @@ const ResultForm = ({ result, isVisible, onOk, onCancel, ...props }) => {
   }, [isVisible]);
 
   const handleOk = (values) => {
-    const { submitForm } = useFormikContext();
-    console.log(values);
-    setConfirmLoading(true);
-    onOk(values);
-    setConfirmLoading(false);
+    submitForm();
   };
 
   const handleCancel = () => {
@@ -118,66 +101,47 @@ const ResultForm = ({ result, isVisible, onOk, onCancel, ...props }) => {
   return (
     <FormWrapper>
       <Modal
-        title={`${result?.fullName} le ${toDateTime(
-          result?.createdAt.seconds
-        ).toLocaleString('fr-FR', localeStringOptions)}`}
+        title={`${test?.fullName} le ${
+          typeof test?.createdAt === 'string'
+            ? test?.createdAt
+            : toDateTime(test?.createdAt?.seconds).toLocaleString(
+                'fr-FR',
+                localeStringOptions
+              )
+        }`}
         visible={isVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Enregistrer"
         cancelText="Annuler"
         //okButtonProps={{ disabled: !valid }}
-        confirmLoading={confirmLoading}
+        confirmLoading={isSubmitting}
         destroyOnClose={true}
       >
-        <Formik
-          initialValues={{
-            testId: result?.id,
-            result: result?.result
-          }}
-          validate={(values) => {
-            const errors = {};
-            if (!values.testId) {
-              errors.testId = 'Required';
-            }
-            if (!values.result) {
-              errors.result = 'Required';
-            }
-            return errors;
-          }}
-          onSubmit={(values, { setSubmitting }) => {
-            handleOk(values);
-            setSubmitting(false);
-          }}
-        >
-          {({ isSubmitting, isValid }) => (
-            <Form className={'result-form'}>
-              <CustomField
-                name="testId"
-                inputType="text"
-                label="Identifiant du test"
-              />
-              <ErrorMessage name="testId" component="div" />
-              <CustomField
-                name="result"
-                inputType="select"
-                label="Résultat du test"
-                options={[
-                  { value: 'positive', label: 'POSITIF' },
-                  { value: 'negative', label: 'NÉGATIF' }
-                ]}
-              />
-              <ErrorMessage name="result" component="div" />
-              <CustomField
+        <Form className={'result-form'}>
+          <CustomField
+            name="testId"
+            inputType="text"
+            label="Identifiant du test"
+          />
+          <ErrorMessage name="testId" component="div" />
+          <CustomField
+            name="result"
+            inputType="select"
+            label="Résultat du test"
+            options={[
+              { value: 'positive', label: 'POSITIF' },
+              { value: 'negative', label: 'NÉGATIF' }
+            ]}
+          />
+          <ErrorMessage name="result" component="div" />
+          {/*  <CustomField
                 name="document"
                 inputType="upload"
                 label="Document"
               />
-              <ErrorMessage name="testId" component="div" />
-              <Button disabled={isSubmitting} type="submit" title="envoyer" />
-            </Form>
-          )}
-        </Formik>
+              <ErrorMessage name="testId" component="div" /> */}
+        </Form>
       </Modal>
     </FormWrapper>
   );
@@ -188,12 +152,20 @@ const FormWrapper = styled.div`
   input {
     margin-bottom: 32px;
   }
+
   ul {
     background: 'transparent';
   }
+
   .ant-menu-submenu-arrow {
     display: 'none';
   }
 `;
 
 export default ResultForm;
+
+ResultForm.propTypes = {
+  isVisible: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  test: PropTypes.object.isRequired
+};
