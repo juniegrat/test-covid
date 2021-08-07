@@ -180,7 +180,7 @@ export const ResetCSS = createGlobalStyle`
     color: ${themeGet('colors.primary')};
   }
   .ant-menu-vertical .ant-menu-item-group-list .ant-menu-submenu-title, .ant-menu-vertical .ant-menu-submenu-title{
-    padding-left:0;
+    padding:0 16px;
     border-radius:10px;
   }
   .ant-menu-submenu-title {
