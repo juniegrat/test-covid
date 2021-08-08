@@ -83,39 +83,6 @@ export async function deleteCollection(collectionName) {
   });
 }
 
-export const batchedDelete = async (collectionKey, objectsToDelete) => {
-  const batch = db.batch();
-  objectsToDelete.forEach(({ docRef }) => {
-    const oldDocRef = db.collection(collectionKey).doc(docRef);
-    batch.delete(oldDocRef);
-  });
-  return batch.commit().then(() => {
-    console.log('Batch Writes successfully committed!');
-  });
-};
-
-export const batchedWrites = async (objectsToAdd) => {
-  const batch = db.batch();
-  objectsToAdd.forEach(({ docRef, collectionKey, data, options }) => {
-    const newDocRef = db.collection(collectionKey).doc(docRef);
-    batch.set(newDocRef, data, options);
-  });
-  return batch.commit().then(() => {
-    console.log('Batch Operation successfully committed!');
-  });
-};
-
-export const batchedUpdates = async (objectsToUpdate) => {
-  const batch = db.batch();
-  objectsToUpdate.forEach(({ docRef, collectionKey, data }) => {
-    const newDocRef = db.collection(collectionKey).doc(docRef);
-    batch.update(newDocRef, data);
-  });
-  return batch.commit().then(() => {
-    console.log('Batch Updates successfully committed!');
-  });
-};
-
 export const batchOperations = async (documents) => {
   const batch = db.batch();
   documents.forEach(({ operation, docRef, collectionKey, data, options }) => {
