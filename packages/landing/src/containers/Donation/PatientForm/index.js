@@ -4,37 +4,29 @@ import Text from 'common/components/Text';
 import Input from 'common/components/Input';
 import Button from 'common/components/Button';
 import Heading from 'common/components/Heading';
-import Checkbox from 'common/components/Checkbox';
 import Container from 'common/components/UI/Container';
 import TabTitle from './TabTitle';
 import {
-  Section,
-  Illustration,
-  DonationFormWrapper,
   DonationForm,
-  FormEnd
+  DonationFormWrapper,
+  FormEnd,
+  Illustration,
+  Section
 } from './patientForm.style';
-
-import { useAuth } from 'common/contexts/AuthProvider';
-import {
-  Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  useFormikContext,
-  useField
-} from 'formik';
+import { ErrorMessage, Form, Formik, useField, useFormikContext } from 'formik';
 import faker from 'faker/locale/fr';
 import {
   batchOperations,
   getNewDocRef
 } from 'common/lib/firebase/firebase.util';
-import { serverTimestamp, increment } from 'common/lib/firebase/firebase';
+import {
+  increment,
+  serverTimestamp,
+  functions
+} from 'common/lib/firebase/firebase';
 import LottieAnimation from 'common/components/Lottie/index';
 // LOTTIE ANIMATION
-import check from 'common/assets/image/lottie/check.json';
 import check1 from 'common/assets/image/lottie/check-zinli.json';
-import check2 from 'common/assets/image/lottie/doc-check.json';
 
 const DonationFormSection = () => {
   const [activeKey, setActiveKey] = useState('1');
@@ -62,7 +54,7 @@ const DonationFormSection = () => {
   };
 
   const onSubmit = async (values) => {
-    for (let x = 0; x < 10; x++) {
+    /*for (let x = 0; x < 10; x++) {
       const newDocRef = await getNewDocRef('tests');
       await batchOperations([
         {
@@ -90,8 +82,10 @@ const DonationFormSection = () => {
           options: { merge: true }
         }
       ]);
-    }
-    return;
+      const sendMail = await functions.httpsCallable('sendMail');
+      const res = await sendMail({ name: faker.name.findName() });
+      console.log(res);
+    }*/
     const newDocRef = await getNewDocRef('tests');
     await batchOperations([
       {
@@ -115,6 +109,12 @@ const DonationFormSection = () => {
         options: { merge: true }
       }
     ]);
+    /* const sendMail = await functions.httpsCallable('sendMail');
+    const res = await sendMail({
+      email: values.email,
+      fullName: values.fullName
+    });
+    console.log(res);*/
   };
 
   return (

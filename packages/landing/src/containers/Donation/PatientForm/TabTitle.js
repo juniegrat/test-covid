@@ -1,7 +1,6 @@
 import React from 'react';
 import { rgba } from 'polished';
 import styled from 'styled-components';
-import { themeGet } from '@styled-system/theme-get';
 
 const TabTitle = ({ step, title }) => {
   return (
