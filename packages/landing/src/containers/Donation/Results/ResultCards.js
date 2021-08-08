@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 // LIBRAIRIES
 import styled from 'styled-components';
 import { themeGet } from '@styled-system/theme-get';
-import { Divider, Empty, Menu } from 'antd';
+import { Divider, Empty, Menu, Timeline, Affix } from 'antd';
 // COMPONENTS
 import Heading from 'common/components/Heading';
 import Text from 'common/components/Text';
@@ -37,6 +37,9 @@ import { trash2 } from 'react-icons-kit/feather/trash2';
 import { checkSquare } from 'react-icons-kit/feather/checkSquare';
 import { mail } from 'react-icons-kit/feather/mail';
 import { plus } from 'react-icons-kit/feather/plus';
+import { clock } from 'react-icons-kit/feather/clock';
+import { checkCircle } from 'react-icons-kit/feather/checkCircle';
+import { xCircle } from 'react-icons-kit/feather/xCircle';
 
 const { SubMenu } = Menu;
 
@@ -44,185 +47,213 @@ const ResultCards = ({ setTest, tests }) => {
   const [currentMenuKey, setCurrentMenuKey] = useState('settings:add');
   return (
     <ResultsWrapper>
-      {tests ? (
-        tests.map(
-          (
-            {
-              id,
-              result,
-              fullName,
-              birthday,
-              createdAt,
-              email,
-              phoneNumber,
-              ssn
-            },
-            index
-          ) => (
-            <Result
-              key={`result-card-key-${index}`}
-              /* className={result ? 'result' : ' '} */
-            >
-              <ActionMenu
-                onClick={setCurrentMenuKey}
-                selectedKeys={[currentMenuKey]}
-                expandIcon={(props) => {
-                  return (
-                    <Icon
-                      icon={
-                        props.isOpen === true ? moreVertical : moreHorizontal
-                        //moreHorizontal
-                      }
-                      size={20}
-                    />
-                  );
-                }}
-                triggerSubMenuAction="click"
-                mode="vertical"
-                style={{
-                  background: 'transparent',
-                  borderRight: 'none'
-                }}
-              >
-                <SubMenu
-                  key="SubMenu"
-                  popupOffset={[22, 0]}
-                  popupClassName={'result-card-more'}
-                >
-                  <Menu.Item
-                    key="setting:add"
-                    icon={<Icon icon={checkSquare} />}
-                  >
-                    Ajouter le résultat
-                  </Menu.Item>
-                  <Menu.Divider />
-                  <Menu.Item
-                    key="setting:update"
-                    icon={<Icon icon={edit} />}
-                    onClick={() =>
-                      setTest({
-                        id,
-                        result,
-                        fullName,
-                        createdAt
-                      })
-                    }
-                  >
-                    Mettre à jour le resultat
-                  </Menu.Item>
-                  <Menu.Divider />
-                  <Menu.Item key="setting:send" icon={<Icon icon={mail} />}>
-                    Envoyer le résultat (Email)
-                  </Menu.Item>
-                  <Menu.Divider />
-                  <Menu.Item
-                    key="setting:download"
-                    icon={<Icon icon={download} />}
-                  >
-                    Télécharger le résultat (PDF)
-                  </Menu.Item>
-                  <Menu.Divider />
-                  <Menu.Item key="setting:delete" icon={<Icon icon={trash2} />}>
-                    Supprimer le résultat
-                  </Menu.Item>
-                  <Menu.Item
-                    disabled
-                    key="setting:profile"
-                    icon={<Icon icon={user} />}
-                  >
-                    Voir le profil patient
-                  </Menu.Item>
-                  <Menu.Divider />
-                  <Menu.Item
-                    disabled
-                    key="setting:sms"
-                    icon={<Icon icon={send} />}
-                  >
-                    Envoyer un SMS
-                  </Menu.Item>
-                </SubMenu>
-              </ActionMenu>
-              <CardTop className="cardTop">
-                <TitleWrapper>
-                  <Heading
-                    as="h3"
-                    content={
-                      typeof createdAt === 'string'
-                        ? createdAt
-                        : toDateTime(createdAt?.seconds).toLocaleString(
-                            'fr-FR',
-                            localeStringOptions
-                          )
+      <Timeline>
+        {tests ? (
+          tests?.map(
+            (
+              {
+                id,
+                result,
+                fullName,
+                birthday,
+                createdAt,
+                email,
+                phoneNumber,
+                ssn
+              },
+              index
+            ) => (
+              <Timeline.Item
+                key={`result-card-key-${index}`}
+                mode="alternate"
+                color={
+                  result === 'negative'
+                    ? 'green'
+                    : result === 'positive'
+                    ? 'red'
+                    : 'blue'
+                }
+                dot={
+                  <Icon
+                    icon={
+                      result === 'negative'
+                        ? checkCircle
+                        : result === 'positive'
+                        ? xCircle
+                        : clock
                     }
                   />
-                  <Text as="p" content={id} />
-                </TitleWrapper>
-                <PatientName>
-                  <Heading as="h4" content={fullName} />
-                </PatientName>
-              </CardTop>
-              <CardBody>
-                <ResultWrapper className="result">
-                  {result ? (
-                    <Text
-                      as="span"
-                      className="result"
-                      content={result === 'negative' ? 'Négatif' : 'Positif'}
-                    />
-                  ) : (
-                    <>
-                      <ResultLabel>
+                }
+              >
+                <Result
+                /* className={result ? 'result' : ' '} */
+                >
+                  <ActionMenu
+                    onClick={setCurrentMenuKey}
+                    selectedKeys={[currentMenuKey]}
+                    expandIcon={(props) => {
+                      return (
+                        <Icon
+                          icon={
+                            props.isOpen === true
+                              ? moreVertical
+                              : moreHorizontal
+                            //moreHorizontal
+                          }
+                          size={20}
+                        />
+                      );
+                    }}
+                    triggerSubMenuAction="click"
+                    mode="vertical"
+                    style={{
+                      background: 'transparent',
+                      borderRight: 'none'
+                    }}
+                  >
+                    <SubMenu
+                      key="SubMenu"
+                      popupOffset={[22, 0]}
+                      popupClassName={'result-card-more'}
+                    >
+                      <Menu.Item
+                        key="setting:update"
+                        icon={<Icon icon={result ? checkSquare : edit} />}
+                        onClick={() =>
+                          setTest({
+                            id,
+                            result,
+                            fullName,
+                            createdAt
+                          })
+                        }
+                      >
+                        {result ? 'Mettre à jour' : 'Ajouter'} le résultat
+                      </Menu.Item>
+                      <Menu.Divider />
+                      <Menu.Item key="setting:send" icon={<Icon icon={mail} />}>
+                        Envoyer le résultat (Email)
+                      </Menu.Item>
+                      <Menu.Divider />
+                      <Menu.Item
+                        key="setting:download"
+                        icon={<Icon icon={download} />}
+                      >
+                        Télécharger le résultat (PDF)
+                      </Menu.Item>
+                      <Menu.Divider />
+                      <Menu.Item
+                        key="setting:delete"
+                        icon={<Icon icon={trash2} />}
+                      >
+                        Supprimer le résultat
+                      </Menu.Item>
+                      <Menu.Item
+                        disabled
+                        key="setting:profile"
+                        icon={<Icon icon={user} />}
+                      >
+                        Voir le profil patient
+                      </Menu.Item>
+                      <Menu.Divider />
+                      <Menu.Item
+                        disabled
+                        key="setting:sms"
+                        icon={<Icon icon={send} />}
+                      >
+                        Envoyer un SMS
+                      </Menu.Item>
+                    </SubMenu>
+                  </ActionMenu>
+                  <CardTop className="cardTop">
+                    <TitleWrapper>
+                      <Heading
+                        as="h3"
+                        content={
+                          typeof createdAt === 'string'
+                            ? createdAt
+                            : toDateTime(createdAt?.seconds).toLocaleString(
+                                'fr-FR',
+                                localeStringOptions
+                              )
+                        }
+                      />
+                      <Text as="p" content={id} />
+                    </TitleWrapper>
+                    <PatientName>
+                      <Heading as="h4" content={fullName} />
+                    </PatientName>
+                  </CardTop>
+                  <CardBody>
+                    <ResultWrapper className="result">
+                      {result ? (
                         <Text
                           as="span"
-                          className="resultLabel"
-                          content={'En attente du résultat'}
-                        />
-                        <Button
-                          title={'Ajouter le résultat'}
-                          icon={<Icon icon={plus} />}
-                          iconPosition={'right'}
-                          colors={'primary'}
-                          variant={'extendedFab'}
-                          type={'button'}
-                          onClick={() =>
-                            setTest({
-                              id,
-                              result,
-                              fullName,
-                              createdAt
-                            })
+                          className="result"
+                          content={
+                            result === 'negative' ? 'Négatif' : 'Positif'
                           }
                         />
-                      </ResultLabel>
-                      <LottieAnimation animation={loading1} />
-                    </>
-                  )}
-                </ResultWrapper>
-                <PatientInfo className="patientInfo">
-                  <Text
-                    as="span"
-                    className="patientInfoLabel"
-                    content={phoneNumber}
-                  />
-                  <Text
-                    as="span"
-                    className="patientInfoLabel"
-                    content={email}
-                  />
-                  <Text
-                    as="span"
-                    className="patientInfoLabel"
-                    content={birthday}
-                  />
-                  <Text as="span" className="patientInfoLabel" content={ssn} />
-                </PatientInfo>
-              </CardBody>
-            </Result>
+                      ) : (
+                        <>
+                          <ResultLabel>
+                            <Text
+                              as="span"
+                              className="resultLabel"
+                              content={'En attente du résultat'}
+                            />
+                            <Button
+                              title={'Ajouter le résultat'}
+                              icon={<Icon icon={plus} />}
+                              iconPosition={'right'}
+                              colors={'primary'}
+                              variant={'extendedFab'}
+                              type={'button'}
+                              onClick={() =>
+                                setTest({
+                                  id,
+                                  result,
+                                  fullName,
+                                  createdAt
+                                })
+                              }
+                            />
+                          </ResultLabel>
+                          <LottieAnimation animation={loading1} />
+                        </>
+                      )}
+                    </ResultWrapper>
+                    <PatientInfo className="patientInfo">
+                      <Text
+                        as="span"
+                        className="patientInfoLabel"
+                        content={phoneNumber}
+                      />
+                      <Text
+                        as="span"
+                        className="patientInfoLabel"
+                        content={email}
+                      />
+                      <Text
+                        as="span"
+                        className="patientInfoLabel"
+                        content={birthday}
+                      />
+                      <Text
+                        as="span"
+                        className="patientInfoLabel"
+                        content={ssn}
+                      />
+                    </PatientInfo>
+                  </CardBody>
+                </Result>
+              </Timeline.Item>
+            )
           )
-        )
-      ) : (
-        <Empty description="Pas encore de résultat" />
-      )}
+        ) : (
+          <Empty description="Pas encore de résultat" />
+        )}
+      </Timeline>
       <Divider />
     </ResultsWrapper>
   );
