@@ -11,6 +11,7 @@ export const firebaseApp = !firebase.apps.length
   : firebase.app();
 export const auth = firebase.auth();
 export const db = firebase.firestore();
+export const functions = firebase.functions();
 export const { serverTimestamp } = firebase.firestore.FieldValue;
 export const increment = firebase.firestore.FieldValue.increment(1);
 export const decrement = firebase.firestore.FieldValue.increment(-1);
@@ -22,7 +23,7 @@ function startEmulators() {
   if (!global[EMULATORS_STARTED]) {
     global[EMULATORS_STARTED] = true;
     firebase.firestore().useEmulator('localhost', 8080);
-    //firebase.auth().useEmulator('http://localhost:9099/');
+    firebase.functions().useEmulator('localhost', 5001);
   }
 }
 
