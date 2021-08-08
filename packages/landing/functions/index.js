@@ -1,32 +1,41 @@
 const functions = require('firebase-functions');
-// The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
+const cors = require('cors');
+const sgMail = require('@sendgrid/mail');
+
 admin.initializeApp();
+sgMail.setApiKey(functions.config().sendgrid.apikey);
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-const msg = {
-  to: 'test@example.com',
-  from: 'test@example.com', // Use the email address or domain you verified above
-  subject: 'Sending with Twilio SendGrid is Fun',
-  text: 'and easy to do anywhere, even with Node.js',
-  html: '<strong>and easy to do anywhere, even with Node.js</strong>'
-};
-
-// Create and Deploy Your First Cloud Functions
-// https://firebase.google.com/docs/functions/write-firebase-functions
-
-exports.sendMail = functions.https.onRequest((request, response) => {
-  (async () => {
+exports.sendMail = functions.https.onCall((data, context) => {
+  const msg = {
+    to: data.email,
+    from: 'junie.grat@oneo-digital.com',
+    templateId: functions.config().sendgrid.templates.resultready
+    /*
+    dynamicTemplateData: {
+      name: data.fullName
+    ,
+    }
+    attachments: [
+      {
+        content: 'Some attachment content',
+        filename: 'some-attachment.txt'
+      }
+    ]*/
+  };
+  return (async () => {
     try {
       await sgMail.send(msg);
+      return { response: 'Success' };
     } catch (error) {
+      if (error.response) {
+        console.error(error.response.body);
+        functions.logger.error(error.response.body, { structuredData: true });
+        return { response: error.response.body };
+      }
       console.error(error);
       functions.logger.error(error, { structuredData: true });
-      response.send(error);
-      if (error.response) {
-        functions.logger.error(error.response.body, { structuredData: true });
-        response.send(error.response.body);
-      }
+      return { response: error };
     }
   })();
 });

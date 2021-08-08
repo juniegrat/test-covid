@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "test-covid-ba091"
+    "default": "test-covid-ba091",
+    "staging": "test-covid-ba091"
   }
 }

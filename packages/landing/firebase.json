@@ -25,10 +25,9 @@
     ]
   },
   "functions": {
-    "source": ".",
     "predeploy": [
-      "npm --prefix \"$PROJECT_DIR\" install",
-      "npm --prefix \"$PROJECT_DIR\" run build"
+      "npm --prefix ./functions install",
+      "npm --prefix ./functions run lint"
     ],
     "runtime": "nodejs12"
   },
