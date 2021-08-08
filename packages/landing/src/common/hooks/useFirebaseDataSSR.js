@@ -11,8 +11,8 @@ export function useCollectionDataSSR(collectionKey, options) {
     return [value, loading, error];
   }
 }
-export function useDocumentDataSSR(collectionKey, options) {
-  const [value, loading, error] = useCollectionData(collectionKey, options);
+export function useDocumentDataSSR(documentRef, options) {
+  const [value, loading, error] = useDocumentData(documentRef, options);
   if (options?.startWith && loading) {
     return [options.startWith, loading, error];
   } else {
