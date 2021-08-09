@@ -24,9 +24,9 @@ export default function useFirebaseAuth() {
   };
 
   const signInWithEmail = async (email, password) =>
-    await auth.signInWithEmailAndPassword(email, password);
+    auth.signInWithEmailAndPassword(email, password);
   const signUpWithEmailAndPassword = async (email, password) =>
-    await auth.createUserWithEmailAndPassword(email, password);
+    auth.createUserWithEmailAndPassword(email, password);
 
   const resetPassword = (email) => auth.sendPasswordResetEmail(email);
 
