@@ -76,7 +76,7 @@ export async function getDocumentsByQuery(collectionName, query) {
 
 export async function deleteCollection(collectionName) {
   const collectionRef = db.collection(collectionName);
-  var batch = db.batch();
+  const batch = db.batch();
   await collectionRef
     .get()
     .then((querySnapshot) =>
@@ -91,6 +91,9 @@ export async function deleteCollection(collectionName) {
 export const batchOperations = async (documents) => {
   const batch = db.batch();
   documents.forEach(({ operation, docRef, collectionKey, data, options }) => {
+    if (!docRef) {
+      return;
+    }
     const newDocRef = db.collection(collectionKey).doc(docRef);
     switch (operation) {
       case 'set':
@@ -115,7 +118,15 @@ export const batchOperations = async (documents) => {
 
 // * STORAGE
 
-export async function getFilesUrl(paths) {
+export async function getDownloadURL(filePath) {
+  const storageRef = storage.ref();
+  const fileRef = storageRef.child(filePath);
+  return new Promise((resolve, reject) => {
+    resolve(fileRef.getDownloadURL());
+  });
+}
+
+export async function getDownloadURLs(paths) {
   return Promise.all(
     paths.map((path) => {
       const storageRef = storage.ref();
@@ -152,6 +163,7 @@ export async function getFilesUrl(paths) {
 }
 
 export async function uploadFiles(files) {
+  console.log('uploaded');
   return Promise.all(
     files.map(({ file, path }) => {
       const storageRef = storage.ref();
@@ -221,12 +233,4 @@ export async function deleteFiles(paths) {
       );
     })
   );
-}
-
-export async function getDownloadURL(filePath) {
-  const storageRef = storage.ref();
-  const fileRef = storageRef.child(filePath);
-  return new Promise((resolve, reject) => {
-    resolve(fileRef.getDownloadURL());
-  });
 }

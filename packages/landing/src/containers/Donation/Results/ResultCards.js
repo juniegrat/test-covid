@@ -3,7 +3,15 @@ import React, { useState } from 'react';
 // PACKAGES
 import styled from 'styled-components';
 import { themeGet } from '@styled-system/theme-get';
-import { Divider, Empty, Menu, Timeline, message, Popconfirm } from 'antd';
+import {
+  Divider,
+  Empty,
+  Menu,
+  Timeline,
+  message,
+  Popconfirm,
+  notification
+} from 'antd';
 // COMPONENTS
 import Heading from 'common/components/Heading';
 import Text from 'common/components/Text';
@@ -26,7 +34,10 @@ import {
 import localeStringOptions from 'common/utils/localeStringOptions';
 import toDateTime from 'common/utils/secondToDate';
 // LIB
-import { getDownloadURL } from 'common/lib/firebase/firebase.util';
+import {
+  batchOperations,
+  getDownloadURL
+} from 'common/lib/firebase/firebase.util';
 //ICONS
 import { Icon } from 'react-icons-kit';
 import { send } from 'react-icons-kit/feather/send';
@@ -48,16 +59,12 @@ const { SubMenu } = Menu;
 
 const ResultCards = ({ setTest, tests }) => {
   const [currentMenuKey, setCurrentMenuKey] = useState('settings:add');
-  const [downloadURL, setDownloadURL] = useState('');
   const handleSend = async (email, fullName) => {
     const sendMail = await functions.httpsCallable('sendMail');
     await sendMail({
       email: email,
       fullName: fullName
     });
-  };
-  const getURL = async (documentPath) => {
-    setDownloadURL(await getDownloadURL(documentPath));
   };
   return (
     <ResultsWrapper>
@@ -74,7 +81,7 @@ const ResultCards = ({ setTest, tests }) => {
                 email,
                 phoneNumber,
                 ssn,
-                documentPath
+                document
               },
               index
             ) => (
@@ -142,14 +149,15 @@ const ResultCards = ({ setTest, tests }) => {
                             result,
                             fullName,
                             createdAt,
-                            email
+                            email,
+                            document
                           })
                         }
                       >
                         {result ? 'Mettre à jour' : 'Ajouter'} le résultat
                       </Menu.Item>
                       <Menu.Divider />
-                      {documentPath && getURL(documentPath) && (
+                      {document && document.downloadURL && (
                         <>
                           <Menu.Item
                             key="setting:send"
@@ -168,7 +176,7 @@ const ResultCards = ({ setTest, tests }) => {
                             key="setting:download"
                             icon={<Icon icon={download} />}
                           >
-                            <a href={downloadURL} download>
+                            <a href={document.downloadURL} download>
                               Télécharger le résultat (PDF)
                             </a>
                           </Menu.Item>
@@ -181,7 +189,22 @@ const ResultCards = ({ setTest, tests }) => {
                           'Êtes-vous sûr de vouloir supprimer le test? ' +
                           'Cette action est irréversible'
                         }
-                        //onConfirm={confirm}
+                        onConfirm={async () => {
+                          message.loading('Chargement...', 0);
+                          await batchOperations([
+                            {
+                              operation: 'delete',
+                              collectionKey: 'tests',
+                              docRef: id
+                            }
+                          ]);
+                          message.destroy();
+                          notification.success({
+                            message: `Test supprimé`,
+                            description: 'Lorem ipsum dolor sit amet',
+                            placement: 'bottomLeft'
+                          });
+                        }}
                         okText="Oui"
                         cancelText="Non"
                       >
@@ -260,7 +283,8 @@ const ResultCards = ({ setTest, tests }) => {
                                   result,
                                   fullName,
                                   createdAt,
-                                  email
+                                  email,
+                                  document
                                 })
                               }
                             />

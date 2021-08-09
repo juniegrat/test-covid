@@ -16,6 +16,7 @@ export const storage = firebase.storage();
 export const { serverTimestamp } = firebase.firestore.FieldValue;
 export const increment = firebase.firestore.FieldValue.increment(1);
 export const decrement = firebase.firestore.FieldValue.increment(-1);
+export const deleteField = firebase.firestore.FieldValue.delete();
 
 export default firebase;
 
