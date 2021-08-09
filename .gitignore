@@ -35,3 +35,4 @@ docz-core
 
 #Webstorm
 .idea
+packages/landing/functions/.runtimeconfig.json

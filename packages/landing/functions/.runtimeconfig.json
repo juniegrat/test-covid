@@ -1,8 +1,8 @@
 {
   "sendgrid": {
+    "apikey": "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",
     "templates": {
       "resultready": "d-be997f4b1f024115a2f4fe3d8b0cf5d5"
-    },
-    "apikey": "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"
+    }
   }
 }
