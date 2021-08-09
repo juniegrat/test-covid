@@ -13,6 +13,7 @@ import { TypeOf } from 'yup';
 import CheckBox from 'common/components/Checkbox/index';
 import Button from 'common/components/Button';
 import Text from '../../../common/components/Text';
+import { getDownloadURL } from '../../../common/lib/firebase/firebase.util';
 
 const { Option } = Select;
 
@@ -74,34 +75,42 @@ const CustomField = ({ ...props }) => {
       );
     }
     case 'upload': {
-      const [documentFile, setDocumentFile] = useState([
-        !props.document && {
-          uid: '-1',
-          name: 'Document',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-          thumbUrl:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        }
-      ]);
+      const [defaultFileList, setDefaultFileList] = useState(
+        props?.defaultFilesUrl
+          ? props.defaultFilesUrl.map((url, index) => ({
+              uid: index,
+              name: 'Document',
+              url,
+              thumbUrl: url
+            }))
+          : []
+      );
+
       return (
         <UploadWrapper>
           <Upload
             listType="file"
-            defaultFileList={documentFile === [] ? [...documentFile] : []}
+            defaultFileList={defaultFileList ? [...defaultFileList] : []}
             id={field.name}
             onChange={({ file, fileList }) => {
               if (file.status !== 'uploading') {
-                setDocumentFile([file]);
+                setDefaultFileList([file]);
                 setFieldValue(field.name, file.originFileObj);
               }
               if (file.status === 'removed') {
                 setFieldValue(field.name, null);
-                setDocumentFile([]);
+                setDefaultFileList([]);
               }
             }}
             maxCount={1}
           >
-            <Button type="button" title="Ajouter document" colors={'primary'} />{' '}
+            <Button
+              type="button"
+              title={`${
+                defaultFileList.length > 0 ? 'Modifier' : 'Ajouter'
+              }  document`}
+              colors={'primary'}
+            />{' '}
             <Text as={'label'} content={'(Max: 1)'} />
           </Upload>
           <ErrorMessage
@@ -154,7 +163,6 @@ const ResultForm = ({ test, isVisible, onCancel }) => {
   const handleCancel = () => {
     onCancel();
   };
-
   return (
     <FormWrapper>
       <Modal
@@ -190,7 +198,12 @@ const ResultForm = ({ test, isVisible, onCancel }) => {
               { value: 'negative', label: 'NÉGATIF' }
             ]}
           />
-          <CustomField name="document" inputType="upload" label="Document" />
+          <CustomField
+            name="document"
+            inputType="upload"
+            label="Document"
+            defaultFilesUrl={test.document && [test.document.downloadURL]}
+          />
         </Form>
       </Modal>
     </FormWrapper>
@@ -203,9 +216,11 @@ const InputWrapper = styled.div`
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;
+
   label {
     margin-bottom: 2px;
   }
+
   & > .error-message {
     color: ${colors.secondaryHover};
   }
@@ -213,11 +228,14 @@ const InputWrapper = styled.div`
 
 const UploadWrapper = styled.div`
   margin-top: 8px;
+
   .upload-list-inline {
   }
+
   .ant-upload-select-picture span {
     display: flex;
     align-items: center;
+
     & > label {
       margin-left: 8px;
       margin-bottom: 0px;
