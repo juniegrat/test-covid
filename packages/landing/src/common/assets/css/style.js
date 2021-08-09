@@ -117,8 +117,9 @@ export const ResetCSS = createGlobalStyle`
       }
     }
   }
+  
 /*  ANT DESIGN */
-.ant-input:focus {
+.ant-input:focus{
   border-color: ${themeGet('colors.primaryLight')};
     outline: 0;
     -webkit-box-shadow: 0 0 0 2px #e98d5733;
@@ -154,7 +155,7 @@ export const ResetCSS = createGlobalStyle`
     box-shadow: none;
 }
 
-.ant-select:not(.ant-select-disabled):hover .ant-select-selector{
+.ant-input:hover,.ant-select:not(.ant-select-disabled):hover .ant-select-selector{
   border-color: ${themeGet('colors.primary')};
 }
 
@@ -171,6 +172,7 @@ export const ResetCSS = createGlobalStyle`
   .ant-menu-submenu:hover
     > .ant-menu-submenu-title
     > .ant-menu-submenu-expand-icon,
+    .ant-menu-item a:hover,
   .ant-menu-submenu:hover > .ant-menu-submenu-title > .ant-menu-submenu-arrow,
   .ant-menu-light .ant-menu-item:hover,
   .ant-menu-light .ant-menu-item-active,
