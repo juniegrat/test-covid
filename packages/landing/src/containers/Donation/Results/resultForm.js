@@ -4,12 +4,15 @@ import { PropTypes } from 'prop-types';
 import { Modal, Select, Input, Upload } from 'antd';
 import { Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import styled from 'styled-components';
-import CheckBox from 'common/components/Checkbox/index';
-import Button from 'common/components/Button';
 // UTILS
 import localeStringOptions from 'common/utils/localeStringOptions';
 import toDateTime from 'common/utils/secondToDate';
+import colors from 'common/theme/donation/colors.js';
 import { TypeOf } from 'yup';
+// COMPONENTS
+import CheckBox from 'common/components/Checkbox/index';
+import Button from 'common/components/Button';
+import Text from '../../../common/components/Text';
 
 const { Option } = Select;
 
@@ -20,60 +23,114 @@ const CustomField = ({ ...props }) => {
   switch (props.inputType) {
     case 'checkbox': {
       return (
-        <CheckBox
-          {...field}
-          {...props}
-          onChange={(val) => {
-            setFieldValue(field.name, val);
-          }}
-        />
+        <InputWrapper>
+          <Text as={'label'} htmlFor={field.name} content={props.label} />
+          <CheckBox
+            {...field}
+            {...props}
+            id={field.name}
+            onChange={(val) => {
+              setFieldValue(field.name, val);
+            }}
+          />
+          <ErrorMessage
+            name={field.name}
+            component="div"
+            className={'error-message'}
+          />
+        </InputWrapper>
       );
     }
     case 'select': {
       return (
-        <Select
-          {...field}
-          onChange={(val) => {
-            setFieldValue(field.name, val);
-          }}
-          style={{ width: 120, marginTop: 20 }}
-          defaultActiveFirstOption={field.value}
-        >
-          {props.options?.map((option, index) => (
-            <Option key={index} value={option.value}>
-              {option.label}
-            </Option>
-          ))}
-        </Select>
+        <InputWrapper>
+          <Text
+            as={'label'}
+            htmlFor={field.name}
+            content={props.label}
+            mb={0}
+          />
+          <Select
+            {...field}
+            onChange={(val) => {
+              setFieldValue(field.name, val);
+            }}
+            style={{ width: 120 }}
+            defaultActiveFirstOption={field.value}
+            id={field.name}
+          >
+            {props.options?.map((option, index) => (
+              <Option key={index} value={option.value}>
+                {option.label}
+              </Option>
+            ))}
+          </Select>
+          <ErrorMessage
+            name={field.name}
+            component="div"
+            className={'error-message'}
+          />
+        </InputWrapper>
       );
     }
     case 'upload': {
+      const [documentFile, setDocumentFile] = useState([
+        !props.document && {
+          uid: '-1',
+          name: 'Document',
+          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+          thumbUrl:
+            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+        }
+      ]);
       return (
-        <Upload
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          listType="picture"
-          //defaultFileList={[...fileList]}
-          className="upload-list-inline"
-          onChange={({ file, fileList }) => {
-            if (file.status !== 'uploading') {
-              console.log(file, fileList);
-            }
-          }}
-        >
-          <Button type="button" title="Ajouter document" colors={'secondary'} />
-        </Upload>
+        <UploadWrapper>
+          <Upload
+            listType="file"
+            defaultFileList={documentFile === [] ? [...documentFile] : []}
+            id={field.name}
+            onChange={({ file, fileList }) => {
+              if (file.status !== 'uploading') {
+                setDocumentFile([file]);
+                setFieldValue(field.name, file.originFileObj);
+              }
+              if (file.status === 'removed') {
+                setFieldValue(field.name, null);
+                setDocumentFile([]);
+              }
+            }}
+            maxCount={1}
+          >
+            <Button type="button" title="Ajouter document" colors={'primary'} />{' '}
+            <Text as={'label'} content={'(Max: 1)'} />
+          </Upload>
+          <ErrorMessage
+            name={field.name}
+            component="div"
+            className={'error-message'}
+          />
+        </UploadWrapper>
       );
     }
     default: {
       return (
-        <Input
-          {...field}
-          {...props}
-          //value={field.value}
-          onChange={(val) => {
-            setFieldValue(field.name, val.target.value);
-          }}
-        />
+        <InputWrapper>
+          <Text as={'label'} htmlFor={field.name} content={props.label} />
+          <Input
+            {...field}
+            {...props}
+            id={field.name}
+            //value={field.value}
+            onChange={(val) => {
+              setFieldValue(field.name, val.target.value);
+            }}
+          />
+          <ErrorMessage
+            name={field.name}
+            component="div"
+            className={'error-message'}
+          />
+        </InputWrapper>
       );
     }
   }
@@ -124,7 +181,6 @@ const ResultForm = ({ test, isVisible, onCancel }) => {
             inputType="text"
             label="Identifiant du test"
           />
-          <ErrorMessage name="testId" component="div" />
           <CustomField
             name="result"
             inputType="select"
@@ -134,31 +190,38 @@ const ResultForm = ({ test, isVisible, onCancel }) => {
               { value: 'negative', label: 'NÉGATIF' }
             ]}
           />
-          <ErrorMessage name="result" component="div" />
-          {/*  <CustomField
-                name="document"
-                inputType="upload"
-                label="Document"
-              />
-              <ErrorMessage name="testId" component="div" /> */}
+          <CustomField name="document" inputType="upload" label="Document" />
         </Form>
       </Modal>
     </FormWrapper>
   );
 };
 
-const FormWrapper = styled.div`
-  #identifiant_du_test,
-  input {
-    margin-bottom: 32px;
-  }
+const FormWrapper = styled.div``;
 
-  ul {
-    background: 'transparent';
+const InputWrapper = styled.div`
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  label {
+    margin-bottom: 2px;
   }
+  & > .error-message {
+    color: ${colors.secondaryHover};
+  }
+`;
 
-  .ant-menu-submenu-arrow {
-    display: 'none';
+const UploadWrapper = styled.div`
+  margin-top: 8px;
+  .upload-list-inline {
+  }
+  .ant-upload-select-picture span {
+    display: flex;
+    align-items: center;
+    & > label {
+      margin-left: 8px;
+      margin-bottom: 0px;
+    }
   }
 `;
 

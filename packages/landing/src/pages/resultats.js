@@ -1,67 +1,90 @@
-import React, {Fragment} from 'react';
-import PropTypes from 'prop-types'
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import Head from 'next/head';
 import Sticky from 'react-stickynode';
-import {ThemeProvider} from 'styled-components';
-import {theme} from 'common/theme/donation';
-import {ResetCSS} from 'common/assets/css/style';
+import { ThemeProvider } from 'styled-components';
+import { theme } from 'common/theme/donation';
+import { ResetCSS } from 'common/assets/css/style';
 import {
-    GlobalStyle,
-    ContentWrapper
+  GlobalStyle,
+  ContentWrapper
 } from 'containers/Donation/donation.style';
 import Results from 'containers/Donation/Results';
-import {getDocuments} from 'common/lib/firebase/firebase.util';
-import {db} from 'common/lib/firebase/firebase';
-import {useCollectiontDataSSR} from 'common/hooks/useCollectiontDataSSR';
-import toDateTime from "common/utils/secondToDate";
-import localeStringOptions from "common/utils/localeStringOptions";
+import { getDocument, getDocuments } from 'common/lib/firebase/firebase.util';
+import { db } from 'common/lib/firebase/firebase';
+import {
+  useCollectionDataSSR,
+  useDocumentDataSSR
+} from 'common/hooks/useFirebaseDataSSR';
+import toDateTime from 'common/utils/secondToDate';
+import localeStringOptions from 'common/utils/localeStringOptions';
 
 const Resultats = (props) => {
-    const ref = db.collection('tests');
-    let [tests] = useCollectiontDataSSR(ref, {
-        idField: "id", startWith: props.tests, transform: (documentData) => ({
-            ...documentData, createdAt: toDateTime(
-                documentData.createdAt?.seconds
-            ).toLocaleString('fr-FR', localeStringOptions), resultAt: toDateTime(
-                documentData.resultAt?.seconds
-            ).toLocaleString('fr-FR', localeStringOptions)
-        })
-    });
-    return (
-        <ThemeProvider theme={theme}>
-            <Fragment>
-                <Head>
-                    <title>Résultats</title>
-                    <meta name="theme-color" content="#FF825C"/>
-                    <meta name="Description" content="Résultats"/>
+  const aggregationsRef = db.collection('aggregations');
+  let [aggregations] = useCollectionDataSSR(aggregationsRef, {
+    idField: 'id',
+    startWith: props.aggregations,
+    transform: (documentData) => ({
+      ...documentData,
+      lastTestAt: toDateTime(documentData.lastTestAt?.seconds).toLocaleString(
+        'fr-FR',
+        localeStringOptions
+      )
+    })
+  });
+  const testsRef = db.collection('tests');
+  let [tests] = useCollectionDataSSR(testsRef, {
+    idField: 'id',
+    startWith: props.tests,
+    transform: (documentData) => ({
+      ...documentData,
+      createdAt: toDateTime(documentData.createdAt?.seconds).toLocaleString(
+        'fr-FR',
+        localeStringOptions
+      ),
+      resultAt: toDateTime(documentData.resultAt?.seconds).toLocaleString(
+        'fr-FR',
+        localeStringOptions
+      )
+    })
+  });
+  return (
+    <ThemeProvider theme={theme}>
+      <Fragment>
+        <Head>
+          <title>Résultats</title>
+          <meta name="theme-color" content="#FF825C" />
+          <meta name="Description" content="Résultats" />
 
-                    {/* Load google fonts */}
-                    <link
-                        rel="stylesheet"
-                        href="https://fonts.googleapis.com/css?family=DM+Sans:400,400i,500,500i,700,700i&display=swap"
-                    />
-                </Head>
-                <ResetCSS/>
-                <GlobalStyle/>
-                <ContentWrapper>
-                    <Results tests={tests}/>
-                </ContentWrapper>
-            </Fragment>
-        </ThemeProvider>
-    );
+          {/* Load google fonts */}
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=DM+Sans:400,400i,500,500i,700,700i&display=swap"
+          />
+        </Head>
+        <ResetCSS />
+        <GlobalStyle />
+        <ContentWrapper>
+          <Results tests={tests} aggregations={aggregations[0]} />
+        </ContentWrapper>
+      </Fragment>
+    </ThemeProvider>
+  );
 };
 
 export async function getStaticProps() {
-    const tests = await getDocuments('tests');
-    return {
-        props: {
-            tests: JSON.parse(JSON.stringify(tests))
-        }
-    };
+  const tests = await getDocuments('tests');
+  const aggregations = await getDocument('aggregations');
+  return {
+    props: {
+      tests: JSON.parse(JSON.stringify(tests)),
+      aggregations: JSON.parse(JSON.stringify(aggregations))
+    }
+  };
 }
 
 Resultats.propTypes = {
-    tests: PropTypes.arrayOf(PropTypes.object)
-}
+  tests: PropTypes.arrayOf(PropTypes.object),
+  aggregations: PropTypes.object
+};
 export default Resultats;
-

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 // NEXT
-// LIBRAIRIES
+// PACKAGES
 import styled from 'styled-components';
 import { themeGet } from '@styled-system/theme-get';
-import { Divider, Empty, Menu, Timeline, Affix } from 'antd';
+import { Divider, Empty, Menu, Timeline, message, Popconfirm } from 'antd';
 // COMPONENTS
 import Heading from 'common/components/Heading';
 import Text from 'common/components/Text';
@@ -25,6 +25,8 @@ import {
 // UTILS
 import localeStringOptions from 'common/utils/localeStringOptions';
 import toDateTime from 'common/utils/secondToDate';
+// LIB
+import { getDownloadURL } from 'common/lib/firebase/firebase.util';
 //ICONS
 import { Icon } from 'react-icons-kit';
 import { send } from 'react-icons-kit/feather/send';
@@ -40,11 +42,23 @@ import { plus } from 'react-icons-kit/feather/plus';
 import { clock } from 'react-icons-kit/feather/clock';
 import { checkCircle } from 'react-icons-kit/feather/checkCircle';
 import { xCircle } from 'react-icons-kit/feather/xCircle';
+import { functions } from 'common/lib/firebase/firebase';
 
 const { SubMenu } = Menu;
 
 const ResultCards = ({ setTest, tests }) => {
   const [currentMenuKey, setCurrentMenuKey] = useState('settings:add');
+  const [downloadURL, setDownloadURL] = useState('');
+  const handleSend = async (email, fullName) => {
+    const sendMail = await functions.httpsCallable('sendMail');
+    await sendMail({
+      email: email,
+      fullName: fullName
+    });
+  };
+  const getURL = async (documentPath) => {
+    setDownloadURL(await getDownloadURL(documentPath));
+  };
   return (
     <ResultsWrapper>
       <Timeline>
@@ -59,7 +73,8 @@ const ResultCards = ({ setTest, tests }) => {
                 createdAt,
                 email,
                 phoneNumber,
-                ssn
+                ssn,
+                documentPath
               },
               index
             ) => (
@@ -95,12 +110,14 @@ const ResultCards = ({ setTest, tests }) => {
                       return (
                         <Icon
                           icon={
-                            props.isOpen === true
-                              ? moreVertical
-                              : moreHorizontal
-                            //moreHorizontal
+                            //props.isOpen ? moreVertical : moreHorizontal
+                            moreHorizontal
                           }
                           size={20}
+                          style={{
+                            transform: props.isOpen ? 'none' : 'rotate(90deg)',
+                            transition: '0.1s ease-in-out'
+                          }}
                         />
                       );
                     }}
@@ -124,30 +141,58 @@ const ResultCards = ({ setTest, tests }) => {
                             id,
                             result,
                             fullName,
-                            createdAt
+                            createdAt,
+                            email
                           })
                         }
                       >
                         {result ? 'Mettre à jour' : 'Ajouter'} le résultat
                       </Menu.Item>
                       <Menu.Divider />
-                      <Menu.Item key="setting:send" icon={<Icon icon={mail} />}>
-                        Envoyer le résultat (Email)
-                      </Menu.Item>
-                      <Menu.Divider />
-                      <Menu.Item
-                        key="setting:download"
-                        icon={<Icon icon={download} />}
+                      {documentPath && getURL(documentPath) && (
+                        <>
+                          <Menu.Item
+                            key="setting:send"
+                            icon={<Icon icon={mail} />}
+                            onClick={async () => {
+                              message.loading('Chargement...', 0);
+                              await handleSend(email, fullName);
+                              message.destroy();
+                              message.success('Envoyé', 3);
+                            }}
+                          >
+                            Envoyer le résultat (Email)
+                          </Menu.Item>
+                          <Menu.Divider />
+                          <Menu.Item
+                            key="setting:download"
+                            icon={<Icon icon={download} />}
+                          >
+                            <a href={downloadURL} download>
+                              Télécharger le résultat (PDF)
+                            </a>
+                          </Menu.Item>
+                          <Menu.Divider />
+                        </>
+                      )}
+                      <Popconfirm
+                        placement="leftTop"
+                        title={
+                          'Êtes-vous sûr de vouloir supprimer le test? ' +
+                          'Cette action est irréversible'
+                        }
+                        //onConfirm={confirm}
+                        okText="Oui"
+                        cancelText="Non"
                       >
-                        Télécharger le résultat (PDF)
-                      </Menu.Item>
+                        <Menu.Item
+                          key="setting:delete"
+                          icon={<Icon icon={trash2} />}
+                        >
+                          Supprimer le test
+                        </Menu.Item>
+                      </Popconfirm>
                       <Menu.Divider />
-                      <Menu.Item
-                        key="setting:delete"
-                        icon={<Icon icon={trash2} />}
-                      >
-                        Supprimer le résultat
-                      </Menu.Item>
                       <Menu.Item
                         disabled
                         key="setting:profile"
@@ -161,7 +206,7 @@ const ResultCards = ({ setTest, tests }) => {
                         key="setting:sms"
                         icon={<Icon icon={send} />}
                       >
-                        Envoyer un SMS
+                        Envoyer par SMS
                       </Menu.Item>
                     </SubMenu>
                   </ActionMenu>
@@ -214,7 +259,8 @@ const ResultCards = ({ setTest, tests }) => {
                                   id,
                                   result,
                                   fullName,
-                                  createdAt
+                                  createdAt,
+                                  email
                                 })
                               }
                             />

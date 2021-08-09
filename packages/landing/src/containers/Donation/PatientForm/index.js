@@ -82,9 +82,9 @@ const DonationFormSection = () => {
           options: { merge: true }
         }
       ]);
-      const sendMail = await functions.httpsCallable('sendMail');
-      const res = await sendMail({ name: faker.name.findName() });
-      console.log(res);
+      // const sendMail = await functions.httpsCallable('sendMail');
+      // const res = await sendMail({ name: faker.name.findName() });
+      // console.log(res);
     }*/
     const newDocRef = await getNewDocRef('tests');
     await batchOperations([
