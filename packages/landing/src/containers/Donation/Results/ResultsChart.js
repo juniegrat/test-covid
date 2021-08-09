@@ -97,10 +97,12 @@ const ResultsChart = ({ aggregations }) => {
           <strong>{aggregations?.totalResults || 0}</strong> sur{' '}
           {aggregations?.totalCount || 0} test traités
         </CurrentStatus>
-        <Text
-          className="last-donate-time"
-          content={`Dernier test il y a ${aggregations?.lastTestAt}`}
-        />
+        {aggregations?.lastTestAt && (
+          <Text
+            className="last-donate-time"
+            content={`Dernier test il y a ${aggregations?.lastTestAt}`}
+          />
+        )}
       </BarArea>
       <Tooltip
         title={`${positiveTests} positifs / ${
