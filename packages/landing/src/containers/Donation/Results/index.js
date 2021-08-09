@@ -25,10 +25,13 @@ import {
 import {
   serverTimestamp,
   increment,
-  functions
+  functions,
+  decrement,
+  deleteField
 } from 'common/lib/firebase/firebase';
 import ResultsChart from './ResultsChart';
 import superjson from 'superjson';
+import findById from '../../../common/utils/findById';
 
 const Results = (props) => {
   const tests = props.tests;
@@ -37,48 +40,49 @@ const Results = (props) => {
 
   const handleSubmit = async (values) => {
     try {
+      const [previousValues] = findById(values.testId, tests);
+      const isSameResult = values.result !== previousValues.result;
+      const documentDeleted = !values.document && previousValues.document;
       message.loading('Chargement...', 0);
-      const path = `results/${values.fullName}/${
-        values.document.name
-      }-${new Date().getTime()}/`;
-      const uploadedFiles = await uploadFiles([
-        {
-          file: values.document,
-          path
-        }
-      ]);
-
-      const addResult = await batchOperations([
+      const path = `results/${values?.fullName}/${values?.document?.name}/`;
+      const [uploadedFile] = values.document
+        ? await uploadFiles([
+            {
+              file: values.document,
+              path
+            }
+          ])
+        : [];
+      const setResults = await batchOperations([
         {
           operation: 'set',
           collectionKey: 'tests',
           docRef: values.testId,
           data: {
-            /*  ...values, */
             testId: values.testId,
             result: values.result,
             resultAt: serverTimestamp(),
-            documentPath: uploadedFiles[0].fullPath
+            ...(uploadedFile && { document: uploadedFile }),
+            ...(documentDeleted && { document: deleteField })
           },
           options: { merge: true }
         },
-        {
-          operation: 'set',
-          collectionKey: 'aggregations',
-          docRef: '--stats--',
-          data:
-            values.result === 'negative'
-              ? {
-                  negativeTests: increment,
-                  totalResults: increment
-                }
-              : {
-                  totalResults: increment
-                },
-          options: { merge: true }
-        }
+        values.result &&
+          !isSameResult && {
+            operation: 'set',
+            collectionKey: 'aggregations',
+            docRef: '--stats--',
+            data: {
+              negativeTests:
+                values.result === 'negative' ? increment : decrement,
+              positiveTests:
+                values.result === 'positive' ? increment : decrement,
+              totalResults: increment
+            },
+            options: { merge: true }
+          }
       ]);
-      if ((await addResult) === true) {
+      if ((await setResults) === true) {
         message.destroy();
         notification.success({
           message: `Résultat mis à jour `,
@@ -86,11 +90,11 @@ const Results = (props) => {
           placement: 'bottomLeft'
         });
       }
-      const sendMail = await functions.httpsCallable('sendMail');
+      /* const sendMail = await functions.httpsCallable('sendMail');
       await sendMail({
         email: values.email,
         fullName: values.fullName
-      });
+      });*/
       setTest(null);
     } catch (e) {
       message.destroy();
@@ -115,6 +119,7 @@ const Results = (props) => {
             result: test?.result,
             email: test?.email,
             fullName: test?.fullName
+            //,document: test?.document
           }}
           validate={(values) => {
             const errors = {};
