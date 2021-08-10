@@ -37,18 +37,31 @@ const Results = (props) => {
   const tests = props.tests;
   const aggregations = props.aggregations;
   const [test, setTest] = useState(null);
+  const initialValues = {
+    testId: test?.id,
+    result: test?.result,
+    email: test?.email,
+    fullName: test?.fullName,
+    document: test?.document
+  };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, initialValues) => {
     try {
       const [previousValues] = findById(values.testId, tests);
-      const isSameResult = values.result !== previousValues.result;
+      if (values === initialValues) {
+        setTest(null);
+        return;
+      }
+      const documentIsFile = typeof values?.document?.name === 'string';
+      const isSameResult = values.result === previousValues.result;
+      const isNewResult = !previousValues.result;
       const documentDeleted = !values.document && previousValues.document;
       message.loading('Chargement...', 0);
       const path = `results/${values?.fullName}/${values?.document?.name}/`;
-      const [uploadedFile] = values.document
+      const [uploadedFile] = documentIsFile
         ? await uploadFiles([
             {
-              file: values.document,
+              file: { ...values.document, name: 'document' },
               path
             }
           ])
@@ -62,7 +75,10 @@ const Results = (props) => {
             testId: values.testId,
             result: values.result,
             resultAt: serverTimestamp(),
-            ...(uploadedFile && { document: uploadedFile }),
+            ...(uploadedFile &&
+              documentIsFile && {
+                document: uploadedFile
+              }),
             ...(documentDeleted && { document: deleteField })
           },
           options: { merge: true }
@@ -73,11 +89,19 @@ const Results = (props) => {
             collectionKey: 'aggregations',
             docRef: '--stats--',
             data: {
-              negativeTests:
-                values.result === 'negative' ? increment : decrement,
-              positiveTests:
-                values.result === 'positive' ? increment : decrement,
-              totalResults: increment
+              ...(isNewResult
+                ? {
+                    ...(values.result === 'negative'
+                      ? { negativeTests: increment }
+                      : { positiveResult: increment }),
+                    totalResults: increment
+                  }
+                : {
+                    negativeTests:
+                      values.result === 'negative' ? increment : decrement,
+                    positiveResult:
+                      values.result === 'positive' ? increment : decrement
+                  })
             },
             options: { merge: true }
           }
@@ -114,13 +138,7 @@ const Results = (props) => {
     <SectionWrapper>
       {test !== null && (
         <Formik
-          initialValues={{
-            testId: test?.id,
-            result: test?.result,
-            email: test?.email,
-            fullName: test?.fullName
-            //,document: test?.document
-          }}
+          initialValues={initialValues}
           validate={(values) => {
             const errors = {};
             if (!values.testId) {
@@ -132,7 +150,7 @@ const Results = (props) => {
             return errors;
           }}
           onSubmit={(values, { setSubmitting }) => {
-            handleSubmit(values);
+            handleSubmit(values, initialValues);
             setSubmitting(false);
           }}
         >
@@ -184,7 +202,7 @@ const BackTopLabel = styled(BackTop)`
   text-align: center;
   font-size: 14px;
 
-  &::hover {
+  &:hover {
     background-color: ${themeGet('colors.primaryHover')};
   }
 `;

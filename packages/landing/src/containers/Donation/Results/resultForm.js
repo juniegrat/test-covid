@@ -85,7 +85,6 @@ const CustomField = ({ ...props }) => {
             }))
           : []
       );
-
       return (
         <UploadWrapper>
           <Upload
@@ -147,7 +146,7 @@ const CustomField = ({ ...props }) => {
 
 const ResultForm = ({ test, isVisible, onCancel }) => {
   const [visible, setVisible] = useState(isVisible);
-  const { submitForm, isSubmitting } = useFormikContext();
+  const { submitForm, isSubmitting, setFieldValue } = useFormikContext();
 
   useEffect(() => {
     if (isVisible !== visible) {
@@ -163,6 +162,7 @@ const ResultForm = ({ test, isVisible, onCancel }) => {
   const handleCancel = () => {
     onCancel();
   };
+
   return (
     <FormWrapper>
       <Modal
