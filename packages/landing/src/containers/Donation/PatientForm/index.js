@@ -54,7 +54,7 @@ const DonationFormSection = () => {
   };
 
   const onSubmit = async (values) => {
-    /*for (let x = 0; x < 10; x++) {
+    for (let x = 0; x < 10; x++) {
       const newDocRef = await getNewDocRef('tests');
       await batchOperations([
         {
@@ -75,7 +75,7 @@ const DonationFormSection = () => {
           collectionKey: 'aggregations',
           docRef: '--stats--',
           data: {
-            totalCount: increment,
+            totalTests: increment,
             lastTestAt: serverTimestamp(),
             lastTestRef: newDocRef
           },
@@ -85,8 +85,8 @@ const DonationFormSection = () => {
       // const sendMail = await functions.httpsCallable('sendMail');
       // const res = await sendMail({ name: faker.name.findName() });
       // console.log(res);
-    }*/
-    const newDocRef = await getNewDocRef('tests');
+    }
+    /* const newDocRef = await getNewDocRef('tests');
     await batchOperations([
       {
         operation: 'set',
@@ -102,13 +102,13 @@ const DonationFormSection = () => {
         collectionKey: 'aggregations',
         docRef: '--stats--',
         data: {
-          totalCount: increment,
+          totalTests: increment,
           lastTestAt: serverTimestamp(),
           lastTestRef: newDocRef
         },
         options: { merge: true }
       }
-    ]);
+    ]);*/
     /* const sendMail = await functions.httpsCallable('sendMail');
     const res = await sendMail({
       email: values.email,

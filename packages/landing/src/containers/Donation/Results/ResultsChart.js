@@ -85,9 +85,9 @@ const ResultsChart = ({ aggregations }) => {
     (aggregations?.totalResults || 0) - (aggregations?.negativeTests || 0);
   const percentNegative =
     ((aggregations?.negativeTests || 0) * 100) /
-    (aggregations?.totalCount || 0);
+    (aggregations?.totalTests || 0);
   const percent =
-    ((aggregations?.totalResults || 0) * 100) / (aggregations?.totalCount || 0);
+    ((aggregations?.totalResults || 0) * 100) / (aggregations?.totalTests || 0);
 
   return (
     <DonationProgressbar>
@@ -95,7 +95,7 @@ const ResultsChart = ({ aggregations }) => {
       <BarArea>
         <CurrentStatus>
           <strong>{aggregations?.totalResults || 0}</strong> sur{' '}
-          {aggregations?.totalCount || 0} test traités
+          {aggregations?.totalTests || 0} test traités
         </CurrentStatus>
         {aggregations?.lastTestAt && (
           <Text
@@ -108,7 +108,7 @@ const ResultsChart = ({ aggregations }) => {
         title={`${positiveTests} positifs / ${
           aggregations?.negativeTests || 0
         } négatifs / ${
-          (aggregations?.totalCount || 0) - (aggregations?.totalResults || 0)
+          (aggregations?.totalTests || 0) - (aggregations?.totalResults || 0)
         } à réaliser`}
       >
         <Progress
