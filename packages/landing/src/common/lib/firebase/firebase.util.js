@@ -163,7 +163,6 @@ export async function getDownloadURLs(paths) {
 }
 
 export async function uploadFiles(files) {
-  console.log('uploaded');
   return Promise.all(
     files.map(({ file, path }) => {
       const storageRef = storage.ref();

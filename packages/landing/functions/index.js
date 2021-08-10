@@ -4,7 +4,8 @@ const sgMail = require('@sendgrid/mail');
 
 admin.initializeApp();
 sgMail.setApiKey(functions.config().sendgrid.apikey);
-
+const increment = admin.firestore.FieldValue.increment(1);
+const decrement = admin.firestore.FieldValue.increment(-1);
 exports.sendMail = functions.https.onCall((data, context) => {
   const { email, fullName, url, document } = data;
   const msg = {
@@ -46,38 +47,38 @@ exports.onDeleteTest = functions.firestore
   .document('tests/{testId}')
   .onDelete((snap, context) => {
     const firestore = admin.firestore();
-    const bucket = admin.storage().bucket();
-    const { document } = snap.data();
+    const { document, result } = snap.data();
     const docRef = firestore.collection('aggregations').doc('--stats--');
     return Promise.all([
-      new Promise((resolve) => {
+      new Promise((resolve, reject) => {
         resolve(
           docRef.update({
-            totalTests: admin.firestore.FieldValue.increment(-1)
+            totalTests: decrement,
+            ...(result === 'positive'
+              ? { positiveTests: decrement }
+              : { negativeTests: decrement })
           })
         );
       }),
-      new Promise((resolve) => {
-        resolve(bucket.file(document.fullPath).delete());
-      })
+      document &&
+        new Promise((resolve) => {
+          const bucket = admin.storage().bucket();
+          resolve(bucket.file(document.fullPath).delete());
+        })
     ]);
   });
 
-/*
 exports.onUpdateTestResult = functions.firestore
   .document('tests/{testId}')
   .onUpdate((change, context) => {
     const firestore = admin.firestore();
     const previousTest = change.before.data();
     const newTest = change.after.data();
-
-    if (!previousTest.result && newTest.result) {
-      const docRef = firestore.collection('aggregations').doc('--stats--');
-      return docRef.update({
-        totalTests: admin.firestore.FieldValue.increment(1)
-      });
+    const filePathArray = previousTest.document.fullPath.split('/');
+    if (previousTest.document && !newTest.document) {
+      const bucket = admin.storage().bucket();
+      return bucket.file(filePathArray[filePathArray - 2]).delete();
     } else {
       return null;
     }
   });
-*/
