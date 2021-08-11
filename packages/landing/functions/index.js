@@ -7,24 +7,23 @@ sgMail.setApiKey(functions.config().sendgrid.apikey);
 const increment = admin.firestore.FieldValue.increment(1);
 const decrement = admin.firestore.FieldValue.increment(-1);
 exports.sendMail = functions.https.onCall((data, context) => {
-  const { email, fullName, url, document } = data;
+  const { email, fullName, testId, createdAt, document } = data;
+  console.log(data);
   const msg = {
     to: 'juniegrat@gmail.com', //email,
     from: 'junie.grat@oneo-digital.com',
-    templateId: functions.config().sendgrid.templates.resultready
-    /*
+    templateId: functions.config().sendgrid.templates.resultready,
     dynamicTemplateData: {
-      name: fullName,
-      url: url
-    ,
-    }
+      fullName,
+      testId,
+      createdAt
+    },
     attachments: [
       document && {
-        content: document.file,
+        content: document,
         filename: document.name
       }
     ]
-    */
   };
   return (async () => {
     try {
@@ -55,8 +54,8 @@ exports.onDeleteTest = functions.firestore
           docRef.update({
             totalTests: decrement,
             ...(result === 'positive'
-              ? { positiveTests: decrement }
-              : { negativeTests: decrement })
+              ? { positiveTests: decrement, totalResults: decrement }
+              : { negativeTests: decrement, totalResults: decrement })
           })
         );
       }),
@@ -74,7 +73,7 @@ exports.onUpdateTestResult = functions.firestore
     const firestore = admin.firestore();
     const previousTest = change.before.data();
     const newTest = change.after.data();
-    const filePathArray = previousTest.document.fullPath.split('/');
+    const filePathArray = previousTest?.document?.fullPath.split('/');
     if (previousTest.document && !newTest.document) {
       const bucket = admin.storage().bucket();
       return bucket.file(filePathArray[filePathArray - 2]).delete();
