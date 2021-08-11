@@ -81,10 +81,10 @@ const chartConfig = {
   }
 };
 const ResultsChart = ({ aggregations }) => {
-  const positiveTests =
-    (aggregations?.totalResults || 0) - (aggregations?.negativeTests || 0);
+  const positiveResults =
+    (aggregations?.totalResults || 0) - (aggregations?.negativeResults || 0);
   const percentNegative =
-    ((aggregations?.negativeTests || 0) * 100) /
+    ((aggregations?.negativeResults || 0) * 100) /
     (aggregations?.totalTests || 0);
   const percent =
     ((aggregations?.totalResults || 0) * 100) / (aggregations?.totalTests || 0);
@@ -105,8 +105,8 @@ const ResultsChart = ({ aggregations }) => {
         )}
       </BarArea>
       <Tooltip
-        title={`${positiveTests} positifs / ${
-          aggregations?.negativeTests || 0
+        title={`${positiveResults} positifs / ${
+          aggregations?.negativeResults || 0
         } négatifs / ${
           (aggregations?.totalTests || 0) - (aggregations?.totalResults || 0)
         } à réaliser`}
