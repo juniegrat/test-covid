@@ -6,13 +6,16 @@ import styled from 'styled-components';
 import { themeGet } from '@styled-system/theme-get';
 import { BackTop, notification, message } from 'antd';
 import { Formik } from 'formik';
+import superjson from 'superjson';
 // COMPONENTS
 import Container from 'common/components/UI/Container';
 import Heading from 'common/components/Heading';
 import ResultForm from './ResultForm';
 import ResultCards from './ResultCards';
+import ResultsChart from './ResultsChart';
+import Button from 'common/components/Button';
 // STYLE
-import SectionWrapper, { ContentArea, TextWrapper } from './results.style';
+import SectionWrapper, { ContentArea, HeaderWrapper } from './results.style';
 //ICONS
 import { Icon } from 'react-icons-kit';
 import { chevronRight } from 'react-icons-kit/feather/chevronRight';
@@ -20,6 +23,7 @@ import { arrowUp } from 'react-icons-kit/feather/arrowUp';
 //FIREBASE
 import {
   batchOperations,
+  deleteCollection,
   uploadFiles
 } from 'common/lib/firebase/firebase.util';
 import {
@@ -29,9 +33,8 @@ import {
   decrement,
   deleteField
 } from 'common/lib/firebase/firebase';
-import ResultsChart from './ResultsChart';
-import superjson from 'superjson';
-import findById from '../../../common/utils/findById';
+// UTILS
+import { findById, toBase64 } from 'common/utils';
 
 const Results = (props) => {
   const tests = props.tests;
@@ -92,12 +95,12 @@ const Results = (props) => {
               ...(isNewResult
                 ? {
                     ...(values.result === 'negative'
-                      ? { negativeTests: increment }
+                      ? { negativeResults: increment }
                       : { positiveResult: increment }),
                     totalResults: increment
                   }
                 : {
-                    negativeTests:
+                    negativeResults:
                       values.result === 'negative' ? increment : decrement,
                     positiveResult:
                       values.result === 'positive' ? increment : decrement
@@ -114,11 +117,21 @@ const Results = (props) => {
           placement: 'bottomLeft'
         });
       }
-      /* const sendMail = await functions.httpsCallable('sendMail');
-      await sendMail({
-        email: values.email,
-        fullName: values.fullName
-      });*/
+      if (isNewResult /*&& values.document*/) {
+        const sendMail = await functions.httpsCallable('sendMail');
+        await sendMail({
+          email: values.email,
+          fullName: values.fullName,
+          testId: values.testId,
+          ...(values.document && {
+            document: {
+              name: values.document.name,
+              file: await toBase64(values.document),
+              type: values.document.type
+            }
+          })
+        });
+      }
       setTest(null);
     } catch (e) {
       message.destroy();
@@ -170,7 +183,7 @@ const Results = (props) => {
       </BackTop>
       <Container>
         <ContentArea>
-          <TextWrapper>
+          <HeaderWrapper>
             <Heading content="Mettez à jour les formulaires patients COVID-19" />
             <p className="desc">
               Retrouvez une liste de tous les formulaires de prise de contact et
@@ -184,7 +197,11 @@ const Results = (props) => {
               </Link>
             </p>
             <ResultsChart aggregations={aggregations} />
-          </TextWrapper>
+          </HeaderWrapper>
+          <Button
+            title={'supprimer tous les tests'}
+            onClick={() => deleteCollection('tests')}
+          />
           <ResultCards tests={tests} setTest={setTest} />
         </ContentArea>
       </Container>

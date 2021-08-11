@@ -16,7 +16,16 @@ exports.sendMail = functions.https.onCall((data, context) => {
       fullName,
       testId,
       createdAt
-    }
+    },
+    ...(document && {
+      attachments: [
+        {
+          content: document.file.split(',')[1],
+          filename: document.name,
+          type: document.type
+        }
+      ]
+    })
   };
   return (async () => {
     try {
