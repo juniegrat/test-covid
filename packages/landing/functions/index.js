@@ -8,7 +8,6 @@ const increment = admin.firestore.FieldValue.increment(1);
 const decrement = admin.firestore.FieldValue.increment(-1);
 exports.sendMail = functions.https.onCall((data, context) => {
   const { email, fullName, testId, createdAt, document } = data;
-  console.log(data);
   const msg = {
     to: 'juniegrat@gmail.com', //email,
     from: 'junie.grat@oneo-digital.com',
@@ -17,13 +16,7 @@ exports.sendMail = functions.https.onCall((data, context) => {
       fullName,
       testId,
       createdAt
-    },
-    attachments: [
-      document && {
-        content: document,
-        filename: document.name
-      }
-    ]
+    }
   };
   return (async () => {
     try {
@@ -53,9 +46,10 @@ exports.onDeleteTest = functions.firestore
         resolve(
           docRef.update({
             totalTests: decrement,
-            ...(result === 'positive'
-              ? { positiveTests: decrement, totalResults: decrement }
-              : { negativeTests: decrement, totalResults: decrement })
+            ...(result &&
+              (result === 'positive'
+                ? { positiveResults: decrement, totalResults: decrement }
+                : { negativeResults: decrement, totalResults: decrement }))
           })
         );
       }),
