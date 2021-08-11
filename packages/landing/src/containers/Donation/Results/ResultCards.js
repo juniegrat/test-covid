@@ -19,6 +19,7 @@ import Button from 'common/components/Button';
 import LottieAnimation from 'common/components/Lottie/index';
 // LOTTIE ANIMATION
 import loading1 from 'common/assets/image/lottie/laboratory-icon.json';
+import docCheck from 'common/assets/image/lottie/doc-check.json';
 // STYLE
 import {
   CardBody,
@@ -255,13 +256,22 @@ const ResultCards = ({ setTest, tests }) => {
                   <CardBody>
                     <ResultWrapper className="result">
                       {result ? (
-                        <Text
-                          as="span"
-                          className="result"
-                          content={
-                            result === 'negative' ? 'Négatif' : 'Positif'
-                          }
-                        />
+                        <>
+                          <Text
+                            as="span"
+                            className="result"
+                            content={
+                              result === 'negative' ? 'Négatif' : 'Positif'
+                            }
+                          />
+                          {document && (
+                            <LottieAnimation
+                              animation={docCheck}
+                              loop={false}
+                              autoplay={false}
+                            />
+                          )}
+                        </>
                       ) : (
                         <>
                           <ResultLabel>
