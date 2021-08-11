@@ -44,7 +44,7 @@ export const TitleWrapper = styled.div`
   }
 `;
 
-export const TextWrapper = styled.div`
+export const HeaderWrapper = styled.div`
   margin-right: 30px;
   @media only screen and (max-width: 1366px) {
     width: 100%;
