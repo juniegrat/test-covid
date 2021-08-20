@@ -167,7 +167,7 @@ export async function uploadFiles(files) {
     files.map(({ file, path }) => {
       const storageRef = storage.ref();
       const fileRef = storageRef.child(path);
-      const uploadTask = fileRef.put(file.name);
+      const uploadTask = fileRef.put(file);
       return new Promise((resolve, reject) =>
         uploadTask.on(
           firebase.storage.TaskEvent.STATE_CHANGED,

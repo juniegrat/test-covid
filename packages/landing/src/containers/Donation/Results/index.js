@@ -60,11 +60,12 @@ const Results = (props) => {
       const isNewResult = !previousValues.result;
       const documentDeleted = !values.document && previousValues.document;
       message.loading('Chargement...', 0);
-      const path = `results/${values?.fullName}/${values?.document?.name}/`;
+      //const path = `results/${values?.fullName}/${values?.document?.name}/`;
+      const path = `results/${values?.fullName}/document`;
       const [uploadedFile] = documentIsFile
         ? await uploadFiles([
             {
-              file: { ...values.document, name: 'document' },
+              file: values.document,
               path
             }
           ])
@@ -159,6 +160,9 @@ const Results = (props) => {
             }
             if (!values.result) {
               errors.result = 'Ce champs est requis';
+            }
+            if (!values.document) {
+              errors.document = 'Ce champs est requis';
             }
             return errors;
           }}
