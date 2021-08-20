@@ -69,11 +69,14 @@ Button.propTypes = {
   /** ClassName of the button */
   className: PropTypes.string,
 
-  /** Add icon */
+  /** Add type */
   type: PropTypes.oneOf(['button', 'submit', 'reset']),
 
   /** Add icon */
   icon: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+
+  /** Add title */
+  title: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 
   /** Add loader */
   loader: PropTypes.object,
