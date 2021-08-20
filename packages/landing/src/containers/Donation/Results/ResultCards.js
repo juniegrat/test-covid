@@ -33,7 +33,7 @@ import {
 } from './results.style';
 // UTILS
 import localeStringOptions from 'common/utils/localeStringOptions';
-import toDateTime from 'common/utils/secondToDate';
+import toDateTime from 'common/utils/toDateTime';
 // LIB
 import {
   batchOperations,

@@ -1,13 +1,13 @@
 import findById from './findById';
 import localeStringOptions from './localeStringOptions';
-import secondToDate from './secondToDate';
+import toDateTime from './toDateTime';
 import toBase64 from './toBase64';
 import validationSchemas from './validationSchemas';
 
 export {
   findById,
   localeStringOptions,
-  secondToDate,
+  toDateTime,
   toBase64,
   validationSchemas
 };

@@ -16,7 +16,7 @@ import {
   useCollectionDataSSR,
   useDocumentDataSSR
 } from 'common/hooks/useFirebaseDataSSR';
-import toDateTime from 'common/utils/secondToDate';
+import toDateTime from 'common/utils/toDateTime';
 import localeStringOptions from 'common/utils/localeStringOptions';
 
 const Resultats = (props) => {

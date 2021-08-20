@@ -6,7 +6,7 @@ import { Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import styled from 'styled-components';
 // UTILS
 import localeStringOptions from 'common/utils/localeStringOptions';
-import toDateTime from 'common/utils/secondToDate';
+import toDateTime from 'common/utils/toDateTime';
 import colors from 'common/theme/donation/colors.js';
 import { TypeOf } from 'yup';
 // COMPONENTS
