@@ -1,11 +1,23 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const sgMail = require('@sendgrid/mail');
+const client = require('twilio')(
+  functions.config().twilio.accountsid,
+  functions.config().twilio.authtoken
+);
 
 admin.initializeApp();
-sgMail.setApiKey(functions.config().sendgrid.apikey);
 const increment = admin.firestore.FieldValue.increment(1);
 const decrement = admin.firestore.FieldValue.increment(-1);
+
+sgMail.setApiKey(functions.config().sendgrid.apikey);
+
+const bindingOpts = {
+  identity: '00000001', // We recommend using a GUID or other anonymized identifier for Identity.
+  bindingType: 'sms',
+  address: '+1651000000000'
+};
+//* SENDGRID
 exports.sendMail = functions.https.onCall((data, context) => {
   const { email, fullName, testId, createdAt, document } = data;
   const msg = {
@@ -30,7 +42,7 @@ exports.sendMail = functions.https.onCall((data, context) => {
   return (async () => {
     try {
       await sgMail.send(msg);
-      return { response: 'Success' };
+      return { response: 'Success Email' };
     } catch (error) {
       if (error.response) {
         console.error(error.response.body);
@@ -44,6 +56,31 @@ exports.sendMail = functions.https.onCall((data, context) => {
   })();
 });
 
+//* TWILIO
+exports.sendSMS = functions.https.onCall((data, context) => {
+  const { phoneNumber, msg } = data;
+  const notificationOpts = {
+    toBinding: JSON.stringify({
+      binding_type: 'sms',
+      address: '+33646850407' //phoneNumber
+    }),
+    body: msg
+  };
+  return (async () => {
+    try {
+      await client.notify
+        .services(functions.config().twilio.serviceinstancesid)
+        .notifications.create(notificationOpts);
+      return { response: 'Success SMS' };
+    } catch (error) {
+      console.error(error);
+      functions.logger.error(error, { structuredData: true });
+      return { response: error };
+    }
+  })();
+});
+
+//* FIREBASE
 exports.onDeleteTest = functions.firestore
   .document('tests/{testId}')
   .onDelete((snap, context) => {
@@ -76,7 +113,8 @@ exports.onUpdateTestResult = functions.firestore
     const firestore = admin.firestore();
     const previousTest = change.before.data();
     const newTest = change.after.data();
-    const filePathArray = previousTest?.document?.fullPath.split('/');
+    const filePathArray =
+      previousTest.document && previousTest.document.fullPath.split('/');
     if (previousTest.document && !newTest.document) {
       const bucket = admin.storage().bucket();
       return bucket.file(filePathArray[filePathArray - 2]).delete();

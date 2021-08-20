@@ -119,8 +119,9 @@ const Results = (props) => {
         });
       }
       if (isNewResult /*&& values.document*/) {
-        const sendMail = await functions.httpsCallable('sendMail');
-        await sendMail({
+        const sendMail = functions.httpsCallable('sendMail');
+        const sendSMS = functions.httpsCallable('sendSMS');
+        /*await sendMail({
           email: values.email,
           fullName: values.fullName,
           testId: values.testId,
@@ -131,6 +132,12 @@ const Results = (props) => {
               type: values.document.type
             }
           })
+        });*/
+        await sendSMS({
+          phoneNumber: previousValues.phoneNumber,
+          msg: `
+          Bonjour,
+Suite à votre test Covid-19 du ${previousValues.createdAt} des documents, dont votre certificat de test, sont disponibles sur notre portail patient: https://localhost:3000/resultat/${values.testId}`
         });
       }
       setTest(null);
