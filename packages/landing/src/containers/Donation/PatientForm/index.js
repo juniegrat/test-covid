@@ -54,7 +54,7 @@ const DonationFormSection = () => {
   };
 
   const onSubmit = async (values) => {
-    for (let x = 0; x < 10; x++) {
+    /*for (let x = 0; x < 10; x++) {
       const newDocRef = await getNewDocRef('tests');
       await batchOperations([
         {
@@ -82,11 +82,8 @@ const DonationFormSection = () => {
           options: { merge: true }
         }
       ]);
-      // const sendMail = await functions.httpsCallable('sendMail');
-      // const res = await sendMail({ name: faker.name.findName() });
-      // console.log(res);
-    }
-    /* const newDocRef = await getNewDocRef('tests');
+    }*/
+    const newDocRef = await getNewDocRef('tests');
     await batchOperations([
       {
         operation: 'set',
@@ -108,13 +105,19 @@ const DonationFormSection = () => {
         },
         options: { merge: true }
       }
-    ]);*/
-    /* const sendMail = await functions.httpsCallable('sendMail');
-    const res = await sendMail({
+    ]);
+    const sendMail = await functions.httpsCallable('sendMail');
+    const sendSMS = functions.httpsCallable('sendSMS');
+    await sendMail({
       email: values.email,
       fullName: values.fullName
     });
-    console.log(res);*/
+    await sendSMS({
+      phoneNumber: values.phoneNumber, //TODO Replace with doctor phone number
+      msg: `
+          Bonjour,
+${values.fullName} vient de remplir le formulaire de test Covid-19, veuillez mettre à jour le résultat sur le portail médecin: https://localhost:3000/resultats`
+    });
   };
 
   return (
