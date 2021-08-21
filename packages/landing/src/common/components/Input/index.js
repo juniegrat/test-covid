@@ -1,6 +1,7 @@
 /* eslint-disable */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { DatePicker } from 'antd';
 import InputField, { EyeButton } from './input.style';
 const Input = ({
   label,
@@ -8,7 +9,7 @@ const Input = ({
   onBlur,
   onFocus,
   onChange,
-  inputType,
+  type,
   isMaterial,
   icon,
   iconPosition,
@@ -50,12 +51,12 @@ const Input = ({
   };
 
   // handle input value
-  const handleOnChange = (event) => {
+  const handleOnChange = (event, isAntd) => {
     setState({
       ...state,
-      value: event.target.value
+      value: isAntd ? event : event.target.value
     });
-    onChange(event.target.value);
+    onChange(isAntd ? event : event.target.value);
   };
 
   // get input focus class
@@ -88,7 +89,7 @@ const Input = ({
     addAllClasses.push(className);
   }
 
-  // if lable is not empty
+  // if label is not empty
   if (label) {
     htmlFor = label.replace(/\s+/g, '_').toLowerCase();
   }
@@ -100,7 +101,7 @@ const Input = ({
   const LabelField = label && <label htmlFor={htmlFor}>{label}</label>;
 
   // Input type check
-  switch (inputType) {
+  switch (type) {
     case 'textarea':
       inputElement = (
         <textarea
@@ -140,6 +141,21 @@ const Input = ({
       );
       break;
 
+    case 'date':
+      inputElement = (
+        <div className="field-wrapper">
+          <DatePicker
+            {...props}
+            id={htmlFor}
+            name={htmlFor}
+            onChange={(val) => handleOnChange(val, true)}
+            onBlur={handleOnBlur}
+            onFocus={handleOnFocus}
+          />
+        </div>
+      );
+      break;
+
     default:
       inputElement = (
         <div className="field-wrapper">
@@ -147,7 +163,7 @@ const Input = ({
             {...props}
             id={htmlFor}
             name={htmlFor}
-            type={inputType}
+            type={type}
             value={state.value}
             onChange={handleOnChange}
             onBlur={handleOnBlur}
@@ -190,7 +206,7 @@ Input.propTypes = {
   passwordShowHide: PropTypes.bool,
 
   /** Set input type of the input element. Default type is text. */
-  inputType: PropTypes.oneOf([
+  type: PropTypes.oneOf([
     'text',
     'email',
     'password',
@@ -226,7 +242,7 @@ Input.propTypes = {
 
 /** Input default type. */
 Input.defaultProps = {
-  inputType: 'text',
+  type: 'text',
   isMaterial: false,
   iconPosition: 'left',
   onBlur: () => {},

@@ -21,7 +21,7 @@ const CustomField = ({ ...props }) => {
   const { setFieldValue } = useFormikContext();
   const [field] = useField(props);
 
-  switch (props.inputType) {
+  switch (props.type) {
     case 'checkbox': {
       return (
         <InputWrapper>

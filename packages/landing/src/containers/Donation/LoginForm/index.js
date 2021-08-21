@@ -59,7 +59,7 @@ const LoginModal = ({
   const CustomField = ({ ...props }) => {
     const { setFieldValue } = useFormikContext();
     const [field] = useField(props);
-    return props.inputType === 'checkbox' ? (
+    return props.type === 'checkbox' ? (
       <CheckBox
         {...field}
         {...props}
@@ -149,7 +149,7 @@ const LoginModal = ({
                       </div>
                       {/*  <CustomField
                         name="remember"
-                        inputType="checkbox"
+                        type="checkbox"
                         id="remember"
                         htmlFor="remember"
                         labelText="Remember Me"
