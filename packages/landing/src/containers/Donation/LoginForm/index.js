@@ -193,7 +193,10 @@ const LoginModal = ({
                     return errors;
                   }}
                   onSubmit={(values, { setSubmitting }) => {
-                    signUp(values);
+                    signUp({
+                      ...values,
+                      birthday: format(values.birthday.toDate(), 'dd-MM-yyyy')
+                    });
                     setSubmitting(false);
                   }}
                 >
