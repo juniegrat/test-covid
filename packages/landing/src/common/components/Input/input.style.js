@@ -114,6 +114,7 @@ const InputField = styled.div`
     }
 
     .highlight {
+      z-index: 2;
       position: absolute;
       height: 1px;
       top: auto;

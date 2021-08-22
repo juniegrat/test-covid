@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { DatePicker } from 'antd';
+import NumberFormat from 'react-number-format';
 import InputField, { EyeButton } from './input.style';
 const Input = ({
   label,
@@ -156,6 +157,24 @@ const Input = ({
       );
       break;
 
+    case 'mask':
+      inputElement = (
+        <div className="field-wrapper">
+          <NumberFormat
+            {...props}
+            id={htmlFor}
+            name={htmlFor}
+            onBlur={handleOnBlur}
+            onFocus={handleOnFocus}
+            onValueChange={(values) => {
+              const { formattedValue, value } = values;
+              handleOnChange(value);
+            }}
+          />
+        </div>
+      );
+      break;
+
     default:
       inputElement = (
         <div className="field-wrapper">
@@ -213,8 +232,12 @@ Input.propTypes = {
     'number',
     'textarea',
     'date',
-    'tel'
+    'tel',
+    'mask'
   ]),
+
+  /** Mask input prop type [* only for mask field] */
+  mask: PropTypes.string,
 
   /** Add icon in input field. This prop will not work with password
    * and textarea field.

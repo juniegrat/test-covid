@@ -181,10 +181,10 @@ ${values.fullName} vient de remplir le formulaire de test Covid-19, veuillez met
                     }
                     if (!values.ssn) {
                       errors.ssn = 'Ce champs est requis';
-                    } /* else if (values.ssn?.length !== 15) {
+                    } else if (values.ssn?.length !== 15) {
                       errors.ssn =
                         'Le numéro de sécurité sociale doit faire 15 caractères';
-                    }*/
+                    }
 
                     return errors;
                   }}
@@ -203,7 +203,7 @@ ${values.fullName} vient de remplir le formulaire de test Covid-19, veuillez met
                           <CustomField
                             name="fullName"
                             type="text"
-                            isMaterial
+                            //isMaterial
                             label="Nom complet"
                           />
                           <ErrorMessage name="fullName" component="div" />
@@ -212,7 +212,7 @@ ${values.fullName} vient de remplir le formulaire de test Covid-19, veuillez met
                           <CustomField
                             name="email"
                             type="email"
-                            isMaterial
+                            //isMaterial
                             label="Adresse email"
                           />
                           <ErrorMessage name="email" component="div" />
@@ -223,7 +223,7 @@ ${values.fullName} vient de remplir le formulaire de test Covid-19, veuillez met
                           <CustomField
                             name="phoneNumber"
                             type="tel"
-                            isMaterial
+                            //isMaterial
                             label="Numéro de téléphone"
                           />
                           <ErrorMessage name="phoneNumber" component="div" />
@@ -232,7 +232,7 @@ ${values.fullName} vient de remplir le formulaire de test Covid-19, veuillez met
                           <CustomField
                             name="birthday"
                             type="date"
-                            isMaterial
+                            //isMaterial
                             label="Date de naissance"
                             format="DD-MM-YYYY"
                             picker="date"
@@ -253,19 +253,20 @@ ${values.fullName} vient de remplir le formulaire de test Covid-19, veuillez met
                       </div>
                       <CustomField
                         icon={<>+</>}
-                        type="text"
+                        type="mask"
                         name="ssn"
                         iconPosition="right"
                         className="ssn"
-                        isMaterial
+                        //isMaterial
                         label="Numéro de sécurité sociale"
+                        format={'# ## ## ## ### ### ##'}
                       />
                       <ErrorMessage name="ssn" component="div" />
 
                       {/*<CustomField
                         type="checkbox"
                         name="check"
-                        isMaterial
+                        //isMaterial
                         label="Checkbox"
                       />*/}
 
