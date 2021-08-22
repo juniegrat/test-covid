@@ -51,12 +51,12 @@ const Input = ({
   };
 
   // handle input value
-  const handleOnChange = (event, isAntd) => {
+  const handleOnChange = (value) => {
     setState({
       ...state,
-      value: isAntd ? event : event.target.value
+      value
     });
-    onChange(isAntd ? event : event.target.value);
+    onChange(value);
   };
 
   // get input focus class
@@ -109,7 +109,7 @@ const Input = ({
           id={htmlFor}
           name={htmlFor}
           value={state.value}
-          onChange={handleOnChange}
+          onChange={({ target }) => handleOnChange(target.value)}
           onBlur={handleOnBlur}
           onFocus={handleOnFocus}
         />
@@ -125,7 +125,7 @@ const Input = ({
             name={htmlFor}
             type={state.toggle ? 'password' : 'text'}
             value={state.value}
-            onChange={handleOnChange}
+            onChange={({ target }) => handleOnChange(target.value)}
             onBlur={handleOnBlur}
             onFocus={handleOnFocus}
           />
@@ -148,7 +148,7 @@ const Input = ({
             {...props}
             id={htmlFor}
             name={htmlFor}
-            onChange={(val) => handleOnChange(val, true)}
+            onChange={handleOnChange}
             onBlur={handleOnBlur}
             onFocus={handleOnFocus}
           />
@@ -165,7 +165,7 @@ const Input = ({
             name={htmlFor}
             type={type}
             value={state.value}
-            onChange={handleOnChange}
+            onChange={({ target }) => handleOnChange(target.value)}
             onBlur={handleOnBlur}
             onFocus={handleOnFocus}
           />
