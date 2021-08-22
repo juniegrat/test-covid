@@ -3,13 +3,14 @@ import { themeGet } from '@styled-system/theme-get';
 
 const InputField = styled.div`
   position: relative;
+  margin-bottom: 20px;
 
   /* Input field wrapper */
   .field-wrapper {
     position: relative;
   }
 
-  /* If input has icon then these styel */
+  /* If input has icon then these style */
   &.icon-left,
   &.icon-right {
     .field-wrapper {
@@ -67,6 +68,8 @@ const InputField = styled.div`
   /* Input and textarea default style */
   textarea,
   input {
+    z-index: 1;
+    background: transparent;
     font-size: 16px;
     padding: 11px;
     display: block;
@@ -121,7 +124,7 @@ const InputField = styled.div`
       transition: all 0.2s ease;
     }
 
-    /* If input has icon then these styel */
+    /* If input has icon then these style */
     &.icon-left,
     &.icon-right {
       .field-wrapper {

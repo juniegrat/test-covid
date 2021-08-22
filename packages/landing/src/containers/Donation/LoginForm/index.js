@@ -1,8 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Tabs, { TabPane } from 'rc-tabs';
-// import TabContent from 'rc-tabs/lib/TabContent';
-// import ScrollableInkTabBar from 'rc-tabs/lib/ScrollableInkTabBar';
 import Box from 'common/components/Box';
 import Text from 'common/components/Text';
 import Input from 'common/components/Input';
@@ -11,14 +9,10 @@ import Button from 'common/components/Button';
 import LoginModalWrapper from './loginForm.style';
 import 'rc-tabs/assets/index.css';
 import { useAuth } from 'common/contexts/AuthProvider';
-import {
-  Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  useFormikContext,
-  useField
-} from 'formik';
+import { Formik, Form, ErrorMessage, useFormikContext, useField } from 'formik';
+import moment from 'moment';
+import sub from 'date-fns/sub';
+import format from 'date-fns/format';
 
 const LoginModal = ({
   row,
@@ -125,7 +119,10 @@ const LoginModal = ({
                     return errors;
                   }}
                   onSubmit={(values, { setSubmitting }) => {
-                    signIn(values);
+                    signIn({
+                      ...values,
+                      birthday: format(values.birthday.toDate(), 'dd-MM-yyyy')
+                    });
                     setSubmitting(false);
                   }}
                 >
@@ -133,15 +130,28 @@ const LoginModal = ({
                     <Form>
                       <CustomField
                         name="email"
-                        inputType="email"
+                        type="email"
                         isMaterial
                         label="Adresse Email"
                       />
                       <ErrorMessage name="email" component="div" />
                       <CustomField
                         name="birthday"
-                        inputType="date"
-                        /* isMaterial */ label="Date de naissance"
+                        type="date"
+                        isMaterial
+                        label="Date de naissance"
+                        format="DD-MM-YYYY"
+                        picker="date"
+                        disabledDate={(current) =>
+                          current && current > sub(new Date(), { years: 11 })
+                        }
+                        defaultPickerValue={moment().subtract(11, 'years')}
+                        showTime={false}
+                        size={'small'}
+                        bordered={false}
+                        placeholder={''}
+                        suffixIcon={false}
+                        style={{ width: '100%', padding: 0 }}
                       />
                       <ErrorMessage name="birthday" component="div" />
                       <div>
@@ -191,22 +201,35 @@ const LoginModal = ({
                     <Form>
                       <CustomField
                         name="fullName"
-                        inputType="text"
+                        type="text"
                         isMaterial
                         label="Nom complet"
                       />
                       <ErrorMessage name="fullName" component="div" />
                       <CustomField
                         name="email"
-                        inputType="email"
+                        type="email"
                         isMaterial
                         label="Adresse Email"
                       />
                       <ErrorMessage name="email" component="div" />
                       <CustomField
                         name="birthday"
-                        inputType="date"
+                        type="date"
+                        isMaterial
                         label="Date de naissance"
+                        format="DD-MM-YYYY"
+                        picker="date"
+                        disabledDate={(current) =>
+                          current && current > sub(new Date(), { years: 11 })
+                        }
+                        defaultPickerValue={moment().subtract(11, 'years')}
+                        showTime={false}
+                        size={'small'}
+                        bordered={false}
+                        placeholder={''}
+                        suffixIcon={false}
+                        style={{ width: '100%', padding: 0 }}
                       />
                       <ErrorMessage name="birthday" component="div" />
                       <div>

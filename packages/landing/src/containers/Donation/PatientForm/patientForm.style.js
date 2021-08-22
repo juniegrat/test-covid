@@ -141,7 +141,7 @@ export const DonationForm = styled.div`
     }
   }
   input {
-    margin-bottom: 20px;
+    //margin-bottom: 20px;
     border-radius: 5px;
     min-height: 60px;
     @media only screen and (max-width: 1024px) {
@@ -152,7 +152,6 @@ export const DonationForm = styled.div`
     input {
       border-radius: 5px;
       min-height: 60px;
-      padding-left: 22px;
       @media only screen and (max-width: 1024px) {
         min-height: 50px;
       }
