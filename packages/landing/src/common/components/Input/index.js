@@ -166,6 +166,7 @@ const Input = ({
             name={htmlFor}
             onBlur={handleOnBlur}
             onFocus={handleOnFocus}
+            type={'tel'}
             onValueChange={(values) => {
               const { formattedValue, value } = values;
               handleOnChange(value);
