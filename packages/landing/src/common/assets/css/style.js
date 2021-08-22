@@ -155,7 +155,7 @@ export const ResetCSS = createGlobalStyle`
     box-shadow: none;
 }
 
-.ant-input:hover,.ant-select:not(.ant-select-disabled):hover .ant-select-selector{
+.ant-input:hover,.ant-select:not(.ant-select-disabled):hover .ant-select-selector,.ant-picker-input > input:hover,.ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before{
   border-color: ${themeGet('colors.primary')};
 }
 
@@ -180,6 +180,12 @@ export const ResetCSS = createGlobalStyle`
   .ant-menu-light .ant-menu-submenu-active,
   .ant-menu-light .ant-menu-submenu-title:hover {
     color: ${themeGet('colors.primary')};
+  }
+  .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner, .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner, .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner{
+    background: ${themeGet('colors.primary')}
+  }
+  .ant-picker-today-btn,.ant-picker-today-btn:hover,.ant-picker-header-view button:hover{
+        color: ${themeGet('colors.primary')};
   }
   .ant-menu-vertical .ant-menu-item-group-list .ant-menu-submenu-title, .ant-menu-vertical .ant-menu-submenu-title{
     padding:0 16px;

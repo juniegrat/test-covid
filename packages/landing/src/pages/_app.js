@@ -7,6 +7,8 @@ import firebase from 'common/lib/firebase/firebase';
 import { AuthUserProvider } from 'common/contexts/AuthProvider';
 import 'common/components/Timer/timer.css';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
+import { ConfigProvider } from 'antd';
+import frFR from 'antd/lib/locale/fr_FR';
 
 export default function CustomApp({ Component, pageProps }) {
   useEffect(() => {
@@ -16,9 +18,11 @@ export default function CustomApp({ Component, pageProps }) {
   }, []);
   return (
     <AuthUserProvider>
-      <Modal>
-        <Component {...pageProps} />
-      </Modal>
+      <ConfigProvider locale={frFR}>
+        <Modal>
+          <Component {...pageProps} />
+        </Modal>
+      </ConfigProvider>
     </AuthUserProvider>
   );
 }
