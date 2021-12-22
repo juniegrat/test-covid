@@ -37,3 +37,4 @@ docz-core
 .idea
 packages/landing/functions/.runtimeconfig.json
 packages/landing/sa.json
+*.log
